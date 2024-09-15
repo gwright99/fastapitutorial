@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 create_dummy() {
-cat << EOF > $1/k8s_manifests/argocd_dummy_trigger.yaml
+cat << EOF > $1/manifests/argocd_dummy_trigger.yaml
 ---
 apiVersion: v1
 kind: ConfigMap
