@@ -6,7 +6,7 @@ cat << EOF > $1/manifests/argocd_dummy_trigger.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: argocd-dummy-trigger-$2
+  name: argocd-dummy-trigger-fastapitutorial
   namespace: fastapi
 data:
   foo: "$(date)"
