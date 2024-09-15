@@ -122,6 +122,11 @@ spec:
     name: public-cloudflare
     namespace: gloo-system
   rules:
+    # This works for 
+    #  - 'https://DOMAIN/tutorial/healthcheck'
+    #  - 'https://DOMAIN/tutorial/'
+    # Breaks for root URL without traiing '/', so need second rule
+    #  - 'https://DOMAIN/tutorial'
     - backendRefs:
       - group: ""
         kind: Service
@@ -138,7 +143,29 @@ spec:
       - method: GET
         path:
           type: PathPrefix
-          value: /tutorial
+          value: "/tutorial/"
+
+    # This works for 
+    #  - 'https://DOMAIN/tutorial'
+    - backendRefs:
+      - group: ""
+        kind: Service
+        name: fastapi-tutorial
+        port: 80
+        weight: 1
+      filters:
+      - type: URLRewrite
+        urlRewrite:
+          path:
+            replacePrefixMatch: /
+            type: ReplacePrefixMatch
+      matches:
+      - method: GET
+        path:
+          type: PathPrefix
+          value: "/tutorial"
+
+  # Example from Lambda app for how to take nice human-friendly URL and retarget.
   # - backendRefs:
   #   - group: ""
   #     kind: Service
