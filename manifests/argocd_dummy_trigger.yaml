@@ -1,0 +1,8 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-dummy-trigger-
+  namespace: fastapi
+data:
+  foo: "Sun Sep 15 09:46:43 EDT 2024"

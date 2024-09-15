@@ -10,11 +10,7 @@ if [[ $(git diff --cached --quiet --diff-filter=ACMR -- "app/*"; echo $?) == 1 ]
   xargs -I % sh -c \
      'echo "$PWD";
       . "$PWD/.githooks/create_dummy";
-      export APP_ROOT=$(echo % | cut -d/ -f 1-2);
-      export APP_NAME=$(echo % | cut -d/ -f 2-2 | tr "-" "_");
-      export APP_PATH="$PWD/$APP_ROOT";
-      # env | grep APP_ROOT;
-      # env | grep APP_NAME;
-      # env | grep APP_PATH;
-      create_dummy $APP_PATH $APP_NAME;'
+      export APP_PATH="$PWD";
+      env | grep APP_PATH;
+      create_dummy $APP_PATH;'
 fi
