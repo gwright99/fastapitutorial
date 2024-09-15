@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-tutorial
+  namespace: fastapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi-tutorial
+  strategy:
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: fastapi-tutorial
+      name: fastapi-tutorial
+    spec:
+      initContainers:
+      - command:
+        - git
+        - clone
+        - https://$(CR_USER):$(CR_PAT)@github.com/gwright99/fastapitutorial.git
+        - /ghcontent/code
+        env:
+        - name: CR_USER
+          valueFrom:
+            secretKeyRef:
+              key: cr_user
+              name: gh-pat
+        - name: CR_PAT
+          valueFrom:
+            secretKeyRef:
+              key: cr_pat
+              name: gh-pat
+        image: alpine/git
+        imagePullPolicy: Always
+        name: git-clone
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /ghcontent
+          name: repo-content
+
+      containers:
+      # - command:
+      #   - mkdocs
+      #   - serve
+      #   - --dev-addr=0.0.0.0:8000
+      - image: ghcr.io/gwright99/fastapitutorial:latest
+        imagePullPolicy: Always
+        name: fastapi-tutorial
+        env:
+        - name: ghcontent
+          value: "/ghcontent/code"
+        ports:
+        - containerPort: 8081
+          name: blah
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+
+        volumeMounts:
+        - mountPath: /docs
+          name: repo-content
+      dnsPolicy: ClusterFirst
+
+      imagePullSecrets:
+      - name: ghcr
+
+      restartPolicy: Always
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+
+      volumes:
+      - emptyDir: {}
+        name: repo-content
