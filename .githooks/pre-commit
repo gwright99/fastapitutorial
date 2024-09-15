@@ -1,0 +1,18 @@
+# Taken from: https://github.com/gwright99/aws_lambda/blob/main/.githooks/pre-commit
+if [[ $(git diff --cached --quiet --diff-filter=ACMR -- "apps/*"; echo $?) == 1 ]]; then
+
+  echo "Found modified app files."
+
+  # See notes above for explanation of logic and design
+  git diff --cached --name-only --diff-filter=ACMR -- "apps/*" | \
+  xargs -I % sh -c \
+     'echo "$PWD";
+      . "$PWD/.githooks/create_dummy";
+      export APP_ROOT=$(echo % | cut -d/ -f 1-2);
+      export APP_NAME=$(echo % | cut -d/ -f 2-2 | tr "-" "_");
+      export APP_PATH="$PWD/$APP_ROOT";
+      # env | grep APP_ROOT;
+      # env | grep APP_NAME;
+      # env | grep APP_PATH;
+      create_dummy $APP_PATH $APP_NAME;'
+fi

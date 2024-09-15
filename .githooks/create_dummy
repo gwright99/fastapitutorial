@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+create_dummy() {
+cat << EOF > $1/k8s_manifests/argocd_dummy_trigger.yaml
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-dummy-trigger-$2
+  namespace: fastapi
+data:
+  foo: "$(date)"
+EOF
+
+git add $1/k8s_manifests/argocd_dummy_trigger.yaml
+}

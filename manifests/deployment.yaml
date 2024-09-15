@@ -143,6 +143,8 @@ spec:
       - method: GET
         path:
           type: PathPrefix
+          # NOTE: Trailing slash important to not get `//` from URLs with more slashes later.
+          # https://github.com/kubernetes-sigs/gateway-api/issues/1954
           value: "/tutorial/"
 
     # This works for 
