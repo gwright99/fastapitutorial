@@ -122,23 +122,23 @@ spec:
     name: public-cloudflare
     namespace: gloo-system
   rules:
-  - backendRefs:
-    - group: ""
-      kind: Service
-      name: fastapi-tutorial
-      port: 80
-      weight: 1
-    filters:
-    - type: URLRewrite
-      urlRewrite:
+    - backendRefs:
+      - group: ""
+        kind: Service
+        name: fastapi-tutorial
+        port: 80
+        weight: 1
+      filters:
+      - type: URLRewrite
+        urlRewrite:
+          path:
+            replacePrefixMatch: /
+            type: ReplacePrefixMatch
+      matches:
+      - method: GET
         path:
-          replacePrefixMatch: /
-          type: ReplacePrefixMatch
-    matches:
-    - method: GET
-      path:
-        type: PathPrefix
-        value: /tutorial
+          type: PathPrefix
+          value: /tutorial
   # - backendRefs:
   #   - group: ""
   #     kind: Service

@@ -13,6 +13,14 @@ def root() -> dict:
     return {"msg": "Hello World!"}
 
 
+@api_router.get("/healthcheck", status_code=200)
+def healthcheck() -> dict:
+    """
+    Healtcheck GET
+    """
+    return {"msg": "I aint dead!"}
+
+
 app.include_router(api_router)
 
 if __name__ == "__main__":
