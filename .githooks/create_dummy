@@ -12,5 +12,5 @@ data:
   foo: "$(date)"
 EOF
 
-git add $1/k8s_manifests/argocd_dummy_trigger.yaml
+git add $1/manifests/argocd_dummy_trigger.yaml
 }
