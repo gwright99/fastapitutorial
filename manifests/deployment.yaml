@@ -47,11 +47,18 @@ spec:
         - mountPath: /ghcontent
           name: repo-content
 
+      # - command: ["sh", "-c", "sleep 3600"]
+      #   image: alpine/git
+      #   imagePullPolicy: Always
+      #   name: sleepawhile
+      #   resources: {}
+      #   terminationMessagePath: /dev/termination-log
+      #   terminationMessagePolicy: File
+      #   volumeMounts:
+      #   - mountPath: /ghcontent
+      #     name: repo-content
+
       containers:
-      # - command:
-      #   - mkdocs
-      #   - serve
-      #   - --dev-addr=0.0.0.0:8000
       - image: ghcr.io/gwright99/fastapitutorial:latest
         imagePullPolicy: Always
         name: fastapi-tutorial
@@ -67,7 +74,7 @@ spec:
         terminationMessagePolicy: File
 
         volumeMounts:
-        - mountPath: /docs
+        - mountPath: /ghcontent
           name: repo-content
       dnsPolicy: ClusterFirst
 
@@ -81,3 +88,71 @@ spec:
       volumes:
       - emptyDir: {}
         name: repo-content
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi-tutorial
+  namespace: fastapi
+spec:
+  internalTrafficPolicy: Cluster
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8081
+  selector:
+    app: fastapi-tutorial
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  labels:
+    argocd.argoproj.io/instance: fastapi-tutorial
+  name: fastapi-tutorial
+  namespace: fastapi
+spec:
+  hostnames:
+  - fastapi.grahamwrightk8s.net
+  parentRefs:
+  - group: gateway.networking.k8s.io
+    kind: Gateway
+    name: public-cloudflare
+    namespace: gloo-system
+  rules:
+  - backendRefs:
+    - group: ""
+      kind: Service
+      name: fastapi-tutorial
+      port: 80
+      weight: 1
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          replacePrefixMatch: /
+          type: ReplacePrefixMatch
+    matches:
+    - method: GET
+      path:
+        type: PathPrefix
+        value: /tutorial
+  # - backendRefs:
+  #   - group: ""
+  #     kind: Service
+  #     name: app2
+  #     port: 8080
+  #     weight: 1
+  #   filters:
+  #   - type: URLRewrite
+  #     urlRewrite:
+  #       path:
+  #         replacePrefixMatch: /2015-03-31/functions/function/invocations
+  #         type: ReplacePrefixMatch
+  #   matches:
+  #   - method: POST
+  #     path:
+  #       type: PathPrefix
+  #       value: /app2
