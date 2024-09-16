@@ -1,6 +1,12 @@
 from fastapi import APIRouter, FastAPI, Request
 
-app = FastAPI(title="Recipe API", openapi_url="/openapi.json")
+app = FastAPI(
+    title="Recipe API",
+    openapi_url="/openapi.json",
+    # docs_url=f"/api/v1/docs",
+    # redoc_url=f"/api/v1/redoc",
+    root_path="/tutorial",  # <------ Fixes K8s routing problem
+)
 
 api_router = APIRouter()
 
@@ -51,22 +57,6 @@ def healthcheck2() -> dict:
     Healtcheck GET
     """
     return {"msg": "I still aint dead!"}
-
-
-@api_router.get("/healthcheck/subhealthcheck9", status_code=200)
-def healthcheck3() -> dict:
-    """
-    Healtcheck GET
-    """
-    return {"msg": "I still aint dead2!"}
-
-
-@api_router.get("/healthcheck/subhealthcheck9", status_code=200)
-def healthcheck4() -> dict:
-    """
-    Healtcheck GET
-    """
-    return {"msg": "I still aint dead4!"}
 
 
 app.include_router(api_router)
