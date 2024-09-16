@@ -61,7 +61,7 @@ def healthcheck3() -> dict:
     return {"msg": "I still aint dead2!"}
 
 
-@api_router.get("/healthcheck/subhealthcheck8", status_code=200)
+@api_router.get("/healthcheck/subhealthcheck9", status_code=200)
 def healthcheck4() -> dict:
     """
     Healtcheck GET
