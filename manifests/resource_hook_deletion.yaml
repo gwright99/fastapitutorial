@@ -16,15 +16,15 @@ data:
     sleep 5
     jq --version
 
-    CONTAINERNAME=$(curl --cacert ${CACERT} --header "Authorization: Bearer ${TOKEN}" -X GET ${APISERVER}/api/v1/namespaces/$NAMESPACE/pods | jq '.items[].metadata.name' | echo $(grep fastapi-tutorial) | xargs)
+    PODNAME=$(curl --cacert ${CACERT} --header "Authorization: Bearer ${TOKEN}" -X GET ${APISERVER}/api/v1/namespaces/$NAMESPACE/pods | jq '.items[].metadata.name' | echo $(grep -e "fastapi-tutorial") | xargs)
     sleep 5
-    echo $CONTAINERNAME
-    curl --cacert ${CACERT} --header "Authorization: Bearer ${TOKEN}" -X DELETE ${APISERVER}/api/v1/namespaces/$NAMESPACE/pods/$CONTAINERNAME
+    echo $PODNAME
+    curl --cacert ${CACERT} --header "Authorization: Bearer ${TOKEN}" -X DELETE ${APISERVER}/api/v1/namespaces/$NAMESPACE/pods/$PODNAME
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  generateName: delete-fastapi-tutorial
+  generateName: delete-tutorial
   annotations:
     argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
@@ -32,7 +32,7 @@ metadata:
 spec:
   template:
     spec:
-      serviceAccountName: delete-fastapi-tutorial
+      serviceAccountName: delete-tutorial
       containers:
       - name: delete-pod  # Cant allow collision with crude grep in CM.
         image: nginx:latest
