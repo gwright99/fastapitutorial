@@ -61,6 +61,14 @@ def healthcheck3() -> dict:
     return {"msg": "I still aint dead2!"}
 
 
+@api_router.get("/healthcheck/subhealthcheck7", status_code=200)
+def healthcheck4() -> dict:
+    """
+    Healtcheck GET
+    """
+    return {"msg": "I still aint dead4!"}
+
+
 app.include_router(api_router)
 
 if __name__ == "__main__":
