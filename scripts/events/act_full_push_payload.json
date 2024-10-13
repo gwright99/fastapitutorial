@@ -1,0 +1,36 @@
+{
+    "event": {
+        "repository": {
+            "default_branch": "master"
+        }
+    },
+    "event_path": "/var/run/act/workflow/event.json",
+    "workflow": "Run Unit Tests",
+    "run_attempt": "1",
+    "run_id": "1",
+    "run_number": "1",
+    "actor": "nektos/act",
+    "repository": "gwright99/fastapitutorial",
+    "event_name": "push",
+    "sha": "e28111676fef222eeb657f3336da229188f203aa",
+    "ref": "refs/heads/main",
+    "ref_name": "main",
+    "ref_type": "branch",
+    "head_ref": "",
+    "base_ref": "",
+    "token": "",
+    "workspace": "/home/deeplearning/fastapitutorial",
+    "action": "4",
+    "action_path": "",
+    "action_ref": "",
+    "action_repository": "",
+    "job": "test",
+    "job_name": "",
+    "repository_owner": "gwright99",
+    "retention_days": "0",
+    "runner_perflog": "/dev/null",
+    "runner_tracking_id": "",
+    "server_url": "https://github.com",
+    "api_url": "https://api.github.com",
+    "graphql_url": "https://api.github.com/graphql"
+}

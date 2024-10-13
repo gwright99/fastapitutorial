@@ -1,0 +1,63 @@
+name: Run Unit Tests
+
+on:
+  push:
+    branches: [master, main]
+
+jobs: 
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10.15", "3.12.7"]
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Sanity Check on Python Version
+        run: python -c "import sys; print(sys.version)"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install -r requirements.txt
+
+      # - if: ${{ github.event.head_commit.message == 'TestingABC' }}
+      - if: ${{ startsWith(github.event.head_commit.message, 'Emit') }}
+        name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
+
+      # - name: Test with pytest
+      #   run: |
+      #     # pytest tests/ --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
+      #     pytest tests/ --doctest-modules --junitxml=junit/test-results.xml --cov=./ --cov-report=html
+
+      # - if: ${{ env.ACT_LOCAL == 'true' }}
+      #   name: Upload Coverage Artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: actoutputs
+      #     path: |
+      #       junit/test-results.xml 
+      #       htmlcov/
+      #     overwrite: true
+
+      # #- if: ${{ vars.ACT_LOCAL =='true' }}
+      # - name: Upload Coverage Artifact2
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: htmlcov
+      #     path: |
+      #       # htmlcov/index.html
+      #       htmlcov/
+      #     # overwrite: true
+      #     compression-level: 0
+      

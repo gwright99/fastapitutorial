@@ -30,16 +30,9 @@ api_router = APIRouter()
 # BG issue has some extra flags for FastAPI which might work but explicit method seems cleaner to me.
 @app.middleware("http")
 async def some_middleware(request: Request, call_next):
-    # if (request.url.path != "/") and (request.url.path)[-1] == "/":
 
-    #     if (request.scope["path"])[0:-1] == "":
-    #         return await call_next(request)
-    #     else:
-    #         # print("Scope_pathA: ", request.scope["path"])
-    #         request.scope["path"] = (request.scope["path"])[0:-1]
-    #         # print("Scope_pathB: ", request.scope["path"])
-    # return await call_next(request)
-    print("clientt.url.path:", request.url.path)
+    # See PKB for why the null check needs to happen (TestClient vs K8s HTTPRoute rewrite)
+    print("request.url.path:", request.url.path)
     if ((request.url.path)[-1] == "/") and ((request.scope["path"])[0:-1] != ""):
         request.scope["path"] = (request.scope["path"])[0:-1]
 
