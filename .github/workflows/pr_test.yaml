@@ -29,16 +29,18 @@ jobs:
         run: |
           # Get the log message of the last commit in branch
           message=$(git log -1 --pretty=format:'%s')
+          echo "Message is: ${message}"
 
           # Regex search for [doc] or [skip-tests]
           re="\[(doc|skip-tests)\]"
           if [[ $message =~ $re ]]; then
             # This is deprecated. Should be different.
             # echo "::set-output name=match::true"
+            echo "Commit is [docs] or [skip-tests] type. Do not simulate tests."
             echo "match=true" >> $GITHUB_OUTPUT
-            echo "$message -> Match is true"
           else
-            echo "$message -> Match is false"
+            echo "Commit requires testing. Run job 'test'."
+            echo "match=false" >> $GITHUB_OUTPUT
           fi
     outputs:
       match: ${{ steps.check_commit.outputs.match }}

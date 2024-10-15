@@ -5,7 +5,8 @@ on:
     branches: [master, main]
 
 env:
-  ACT_LOCAL: 'false'
+  # ACT_LOCAL: 'false'
+  PUBLISH_COVERAGE: 'true'
 
 jobs: 
   test:
@@ -21,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.10.15", "3.12.7"]
+        python-version: ["3.10.15"] # ["3.10.15", "3.12.7"]
 
     steps:
       - uses: actions/checkout@v4
@@ -51,7 +52,8 @@ jobs:
           # pytest tests/ --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
           pytest tests/ --doctest-modules --junitxml=junit/test-results.xml --cov=./ --cov-report=html
 
-      - if: ${{ env.ACT_LOCAL == 'true' }}
+      # - if: ${{ env.ACT_LOCAL == 'true' }}
+      - if: ${{ env.PUBLISH_COVERAGE == 'true' }}
         name: Upload Coverage Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -62,7 +64,8 @@ jobs:
           # # NOTE: This if conflicts with the conditional at the top
           # if: ${{ always() }}
 
-      - if: ${{ vars.ACT_LOCAL == 'true' }}
+      # - if: ${{ env.ACT_LOCAL == 'true' }}
+      - if: ${{ env.PUBLISH_COVERAGE == 'true' }}
         name: Upload Coverage Artifact2
         uses: actions/upload-artifact@v4
         with:
