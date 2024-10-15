@@ -1,3 +1,10 @@
+import pytest
+from fastapi.testclient import TestClient
+
+from app.main import app
+
+
+# ---------------------------------------------------------------------------------------------
 def pytest_configure(config):
     """
     Allows plugins and conftest files to perform initial configuration.
@@ -35,3 +42,12 @@ def pytest_unconfigure(config):
     Called before test process is exited.
     """
     pass
+
+
+# ---------------------------------------------------------------------------------------------
+
+
+@pytest.fixture(scope="function", autouse=True)
+def client() -> TestClient:
+    print("Creating TestClient")
+    return TestClient(app)
