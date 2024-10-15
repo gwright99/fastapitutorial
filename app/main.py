@@ -1,5 +1,7 @@
 from fastapi import APIRouter, FastAPI, Request
-from pydantic import BaseModel
+
+# from pydantic import BaseModel
+from models.models import Add2
 
 app = FastAPI(
     title="Recipe API",
@@ -64,9 +66,9 @@ def healthcheck2() -> dict:
     return {"msg": "I still aint dead!"}
 
 
-class Add2(BaseModel):
-    x: int
-    y: int
+# class Add2(BaseModel):
+#     x: int
+#     y: int
 
 
 @api_router.post("/add2", status_code=200)
