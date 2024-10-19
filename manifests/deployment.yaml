@@ -65,6 +65,8 @@ spec:
         env:
         - name: ghcontent
           value: "/ghcontent/code"
+        - name: PYTHONPATH
+          value: "/ghcontent/code/app"
         ports:
         - containerPort: 8081
           name: blah
