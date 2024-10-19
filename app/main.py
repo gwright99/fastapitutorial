@@ -66,11 +66,6 @@ def healthcheck2() -> dict:
     return {"msg": "I still aint dead!"}
 
 
-# class Add2(BaseModel):
-#     x: int
-#     y: int
-
-
 @api_router.post("/add2", status_code=200)
 # def add2(x: int, y: int) -> dict:
 def add2(item: Add2) -> dict:
