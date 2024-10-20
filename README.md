@@ -21,3 +21,7 @@ docker push ghcr.io/gwright99/fastapitutorial:latest
 
 ## Testing Errors
 `HTTP 503` error result either from the Pod being broken or the HTTPRoute not having been updated.
+
+# Badge
+![Unit Tests](https://github.com/gwright99/fastapitutorial/actions/workflows/unittest.yaml/badge.svg)
+![PR Test](https://github.com/gwright99/fastapitutorial/actions/workflows/pr_test.yaml/badge.svg)
