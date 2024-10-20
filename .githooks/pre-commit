@@ -1,12 +1,14 @@
 #!/bin/bash
 
 # Taken from: https://github.com/gwright99/aws_lambda/blob/main/.githooks/pre-commit
-if [[ $(git diff --cached --quiet --diff-filter=ACMR -- "app/*"; echo $?) == 1 ]]; then
+# if [[ $(git diff --cached --quiet --diff-filter=ACMR -- "app/*"; echo $?) == 1 ]]; then
+if [[ $(git diff --cached --quiet --diff-filter=ACMR -- "src/*"; echo $?) == 1 ]]; then
 
   echo "Found modified app files."
 
   # See notes above for explanation of logic and design
-  git diff --cached --name-only --diff-filter=ACMR -- "app/*" | \
+  # git diff --cached --name-only --diff-filter=ACMR -- "app/*" | \
+  git diff --cached --name-only --diff-filter=ACMR -- "src/*" | \
   xargs -I % sh -c \
      'echo "$PWD";
       . "$PWD/.githooks/create_dummy";

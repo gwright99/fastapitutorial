@@ -1,29 +1,11 @@
-import sys
-from pathlib import Path
+# import sys
+# from pathlib import Path
 
-# Load `PROJECT_ROOT/` into `sys.path` for easy import
-base_import_dir = Path(__file__).resolve().parents[1]
+# # Load `PROJECT_ROOT/` into `sys.path` for easy import
+# base_import_dir = Path(__file__).resolve().parents[1]
 
-if base_import_dir not in sys.path:
-    sys.path.append(str(base_import_dir))
-    sys.path.append(f"{str(base_import_dir)}/app")
+# if base_import_dir not in sys.path:
+#     sys.path.append(str(base_import_dir))
+#     sys.path.append(f"{str(base_import_dir)}/app")
 
-print(sys.path)
-
-
-# %%
-def add2(x,y):
-    """Add 2 numbers.
-
-    Args:
-        x (_type_): _description_
-        y (_type_): _description_
-
-    Returns:
-        _type_: _description_
-    """
-    return x + y
-
-add2(3,5)
-
-# %%
+# print(sys.path)

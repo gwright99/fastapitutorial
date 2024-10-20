@@ -1,4 +1,4 @@
 fastapi[standard]
 pytest
 pytest-cov
-requests-2.32.2
+requests==2.32.2
