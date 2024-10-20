@@ -1,4 +1,2 @@
 fastapi[standard]
-pytest
-pytest-cov
 requests==2.32.2

@@ -12,4 +12,5 @@ ENV ghcontent=/ghcontent
 # https://fastapi.tiangolo.com/deployment/docker/#behind-a-tls-termination-proxy
 # Tells uvicorn to trust headers since they'll come from the Gateway TLS 
 # CMD [ "fastapi", "run", "app/main.py", "--proxy-headers", "--port", "8081" ]
-CMD [ "bash", "-c", "fastapi run $ghcontent/app/main.py --proxy-headers --port 8081" ]
+# CMD [ "bash", "-c", "fastapi run $ghcontent/app/main.py --proxy-headers --port 8081" ]
+CMD [ "bash", "-c", "fastapi run $ghcontent/src/app/app.py --proxy-headers --port 8081" ]

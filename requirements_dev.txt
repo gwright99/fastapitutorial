@@ -1,0 +1,6 @@
+# Logic for these being separate: only need if you want to run the tests.
+flake8==7.1.1
+tox==4.23.0
+pytest==8.3.3
+pytest-cov==5.0.0
+mypy==1.12.1

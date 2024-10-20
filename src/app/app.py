@@ -43,7 +43,7 @@ async def some_middleware(request: Request, call_next):
 
 
 @api_router.get("/", status_code=200)
-def root() -> dict:
+def root() -> dict[str, str]:
     """
     Root GET
     """
@@ -51,7 +51,7 @@ def root() -> dict:
 
 
 @api_router.get("/healthcheck", status_code=200)
-def healthcheck() -> dict:
+def healthcheck() -> dict[str, str]:
     """
     Healtcheck GET
     """
@@ -59,7 +59,7 @@ def healthcheck() -> dict:
 
 
 @api_router.get("/healthcheck/subhealthcheck", status_code=200)
-def healthcheck2() -> dict:
+def healthcheck2() -> dict[str, str]:
     """
     Healtcheck GET
     """
@@ -70,12 +70,10 @@ def healthcheck2() -> dict:
 # HTTPRoute was modified to not discriminate on HTTP verb. Other verbs like PUT / DELETE should work now too.
 @api_router.post("/add2", status_code=200)
 # def add2(x: int, y: int) -> dict:
-def add2(item: Add2) -> dict:
+def add2(item: Add2) -> dict[str, int]:
     # item_dict = item.dict()
     return {"result": item.x + item.y}
 
-
-# Test
 
 app.include_router(api_router)
 
