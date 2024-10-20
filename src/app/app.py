@@ -75,6 +75,8 @@ def add2(item: Add2) -> dict:
     return {"result": item.x + item.y}
 
 
+# Test
+
 app.include_router(api_router)
 
 if __name__ == "__main__":
