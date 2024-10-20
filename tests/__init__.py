@@ -9,3 +9,21 @@ if base_import_dir not in sys.path:
     sys.path.append(f"{str(base_import_dir)}/app")
 
 print(sys.path)
+
+
+# %%
+def add2(x,y):
+    """Add 2 numbers.
+
+    Args:
+        x (_type_): _description_
+        y (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    return x + y
+
+add2(3,5)
+
+# %%

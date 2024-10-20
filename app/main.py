@@ -66,6 +66,8 @@ def healthcheck2() -> dict:
     return {"msg": "I still aint dead!"}
 
 
+# NOTE: This didn't work initially because HTTPRoute was only allowing GETs through initially.
+# HTTPRoute was modified to not discriminate on HTTP verb. Other verbs like PUT / DELETE should work now too.
 @api_router.post("/add2", status_code=200)
 # def add2(x: int, y: int) -> dict:
 def add2(item: Add2) -> dict:
