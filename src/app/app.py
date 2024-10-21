@@ -1,7 +1,7 @@
 from fastapi import APIRouter, FastAPI, Request
 
 # from pydantic import BaseModel
-from models.models import Add2
+from models.models import Add2, Item, items
 
 app = FastAPI(
     title="Recipe API",
@@ -12,6 +12,8 @@ app = FastAPI(
 )
 
 api_router = APIRouter()
+
+arjan_router = APIRouter()
 
 
 # Problem with handling trailing slash in browser
@@ -75,7 +77,13 @@ def add2(item: Add2) -> dict[str, int]:
     return {"result": item.x + item.y}
 
 
-app.include_router(api_router)
+@arjan_router.get("/items", status_code=200)
+def return_items() -> dict[int, Item]:
+    return items
+
+
+app.include_router(router=api_router)
+app.include_router(router=arjan_router)
 
 if __name__ == "__main__":
     # Use for debugging purposes only

@@ -15,3 +15,11 @@ def test_add() -> None:
     assert response.status_code == 200
     data = response.json()
     assert data == {"result": 6}
+
+
+def test_items() -> None:
+    response = requests.get(f"{ENDPOINT}/items")
+
+    assert response == 200
+    data = response.json()
+    assert len(data.keys()) == 3
