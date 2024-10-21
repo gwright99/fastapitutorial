@@ -1,7 +1,7 @@
 from fastapi import APIRouter, FastAPI, HTTPException, Request
 
 # from pydantic import BaseModel
-from models.models import Add2, Item, items
+from models.models import Add2, Category, Item, items
 
 app = FastAPI(
     title="Recipe API",
@@ -77,9 +77,45 @@ def add2(item: Add2) -> dict[str, int]:
     return {"result": item.x + item.y}
 
 
+# Created type to make dictionary definition easier / cleaner.
+Selection = dict[str, str | int | float | Category | None]
+
+
 @arjan_router.get("/items", status_code=200)
-def return_items() -> dict[int, Item]:
-    return items
+def query_item_by_parameters(
+    name: str | None = None,
+    price: float | None = None,
+    count: int | None = None,
+    category: Category | None = None,
+) -> dict[str, Selection | list[Item]]:
+    # return items
+    def check_item(item: Item) -> bool:
+        # Check all conditions and then return a singular True / False
+        return all(
+            (
+                name is None or item.name == name,
+                price is None or item.price == price,
+                count is None or item.count == count,
+                category is None or item.category is category,
+            )
+        )
+
+    # Return any item which matches all selection criteria
+    selection: list[Item] = [item for item in items.values() if check_item(item)]
+    return {
+        "query": {"name": name, "price": price, "count": count, "category": category},
+        "selection": selection,
+    }
+
+
+@arjan_router.post("/items", status_code=200)
+def add_item_if_not_exists(item: Item) -> dict[str, Item]:
+    # item.id is mirrored in dict keys
+    if item.id in items.keys():
+        HTTPException(status_code=400, detail=f"Item with {item.id} already exists.")
+
+    items[item.id] = item
+    return {"added": item}
 
 
 @arjan_router.get("/items/{item_id}")

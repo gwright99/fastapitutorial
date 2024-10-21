@@ -2,7 +2,7 @@ import json
 
 import requests
 
-from models.models import Item
+from models.models import Category, Item
 
 # TODO: Convert this pull the value from ENV VAR so I can test locally and it container the same way with requests.
 ENDPOINT = "https://fastapi.grahamwrightk8s.net/tutorial"
@@ -28,7 +28,7 @@ def test_items() -> None:
 
     assert response.status_code == 200
     data = response.json()
-    assert len(data.keys()) == 3
+    assert len(data.keys()) == 2  # 3
 
 
 def test_items_get_item_by_id() -> None:
@@ -40,8 +40,48 @@ def test_items_get_item_by_id() -> None:
     # json.dumps() to convert dictionary to string representation.
     # Raw load the string to reconstitute it as an Item.
     # This seems convoluted, there must be a better way?
-    item = Item.parse_raw(json.dumps(response.json()))
+    # item = Item.parse_raw(json.dumps(response.json()))
+    item = Item.parse_raw(response.text)
 
     assert item.name == "Hammer"
     assert item.price == 9.99
     assert item.count == 20
+
+
+def test_items_get_item_by_id_fail() -> None:
+    response = requests.get(f"{ENDPOINT}/items/526")
+    print(f"Response is: {response.json()}")
+
+    assert response.status_code == 404
+    assert "does not exist" in response.text
+
+
+def test_items_get_item_by_str_fail() -> None:
+    response = requests.get(f"{ENDPOINT}/items/faketext")
+    print(f"Response is: {response.json()}")
+
+    assert response.status_code == 422
+    assert "unable to parse string as an integer" in response.text
+
+
+def test_get_item_nails() -> None:
+    response = requests.get(f"{ENDPOINT}/items?name=Nails")
+    print(f"Response is: {response.json()}")
+
+    assert response.status_code == 200
+    data = response.json()
+    item = json.dumps(data["selection"][0])
+    item = Item.parse_raw(item)
+    assert item.count == 100
+
+
+def test_add_item() -> None:
+    payload = Item(name="Hacksaw", price=19.99, count=25, id=4, category=Category.TOOLS)
+    # Use `data` instead of `json` since payload is already JSON-type
+    response = requests.post(f"{ENDPOINT}/items", data=payload.json())
+
+    assert response.status_code == 200
+    assert "added" in response.json().keys()
+
+
+# /items?count=20
