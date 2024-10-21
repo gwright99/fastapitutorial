@@ -19,6 +19,12 @@ docker build -t ghcr.io/gwright99/fastapitutorial:latest .
 docker push ghcr.io/gwright99/fastapitutorial:latest
 ```
 
+## Run locally so I can test with `requests`
+```bash
+$ fastapi run src/app/app.py --port 8080
+$ pytest -vs   # Note that I changed ENDPOINT in test file.
+```
+
 ## Testing Errors
 `HTTP 503` error result either from the Pod being broken or the HTTPRoute not having been updated.
 

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, FastAPI, Request
+from fastapi import APIRouter, FastAPI, HTTPException, Request
 
 # from pydantic import BaseModel
 from models.models import Add2, Item, items
@@ -80,6 +80,15 @@ def add2(item: Add2) -> dict[str, int]:
 @arjan_router.get("/items", status_code=200)
 def return_items() -> dict[int, Item]:
     return items
+
+
+@arjan_router.get("/items/{item_id}")
+def query_item_by_id(item_id: int) -> Item:
+    if item_id not in items.keys():
+        raise HTTPException(
+            status_code=404, detail=f"Item with {item_id=} does not exist."
+        )
+    return items[item_id]
 
 
 app.include_router(router=api_router)
