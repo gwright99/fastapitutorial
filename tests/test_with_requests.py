@@ -84,4 +84,26 @@ def test_add_item() -> None:
     assert "added" in response.json().keys()
 
 
-# /items?count=20
+def test_update_item() -> None:
+    # This is wrong? Not a payload but need to use string query instead?
+    payload = {"item_id": 0, "count": 25}
+    # response = requests.put(url=f"{ENDPOINT}/items/update/0", data=payload)
+    response = requests.put(url=f"{ENDPOINT}/items/0?count=25")
+    print(f"Response is: {response.json()}")
+
+    assert response.status_code == 200
+    data = response.json()
+    item = Item.parse_raw(json.dumps(data["updated"]))
+    assert item.count == 25
+
+
+def test_update_item() -> None:
+    payload = Item(name="Hacksaw", price=19.99, count=25, id=4, category=Category.TOOLS)
+    response = requests.delete(f"{ENDPOINT}/items/1", data=payload.json())
+    print(f"Response is: {response.json()}")
+
+    assert "deleted" in response.json().keys()
+
+
+# print(requests.get("http://127.0.0.1:8080/items?count=20").json())
+# print(requests.get("http://127.0.0.1:8080/items?count=Hello").json())

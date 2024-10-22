@@ -5,4 +5,4 @@ metadata:
   name: argocd-dummy-trigger-fastapitutorial
   namespace: fastapi
 data:
-  foo: "Mon Oct 21 08:25:08 EDT 2024"
+  foo: "Tue Oct 22 08:42:58 EDT 2024"

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, FastAPI, HTTPException, Request
+from fastapi import APIRouter, FastAPI, HTTPException, Path, Query, Request
 
 # from pydantic import BaseModel
 from models.models import Add2, Category, Item, items
@@ -125,6 +125,49 @@ def query_item_by_id(item_id: int) -> Item:
             status_code=404, detail=f"Item with {item_id=} does not exist."
         )
     return items[item_id]
+
+
+# Updates must come in on query
+@arjan_router.put("/items/{item_id}", status_code=200)
+def update_item(
+    item_id: int = Path(default=..., ge=0),
+    name: str | None = Query(default=None, min_length=1, max_length=8),
+    price: float | None = Query(default=None, gt=0.0),
+    count: int | None = Query(default=None, ge=0),
+) -> dict[str, Item]:
+    if item_id not in items.keys():
+        HTTPException(status_code=404, detail=f"Item with {item_id=} does not exist.")
+    if all(info for info in (name, price, count)):
+        HTTPException(status_code=404, detail="No parameters provided for update.")
+
+    print(f"{item_id=}; {count=}; {price=}; {count=}")
+
+    item = items[item_id]
+    if name is not None:
+        print("Updating name")
+        item.name = name
+    if price is not None:
+        print("Updating price")
+        item.price = price
+    if count is not None:
+        print("Updating count")
+        item.count = count
+
+    print("Update core list.")
+    items[item_id] = item
+
+    return {"updated": item}
+
+
+# Updates must come in on body since I'm going to use a Pydantic model
+@arjan_router.delete("/items/{item_id}", status_code=200)
+def delete_item(item_id: int, item: Item) -> dict[str, Item]:
+    if item_id not in items.keys():
+        HTTPException(status_code=404, detail=f"Item with {item_id=} does not exist.")
+
+    print(f"{item.name=}; {item.count=}")
+    item = items.pop(item_id)
+    return {"deleted": item}
 
 
 app.include_router(router=api_router)
