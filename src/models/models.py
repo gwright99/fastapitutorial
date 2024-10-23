@@ -1,6 +1,6 @@
 from enum import Enum
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class Add2(BaseModel):
@@ -14,11 +14,13 @@ class Category(Enum):
 
 
 class Item(BaseModel):
-    name: str
-    price: float
-    count: int
-    id: int
-    category: Category
+    """Representation of an item in the system. Attributes with Field will have Field details show up in /docs."""
+
+    name: str = Field(description="Name of the item.")
+    price: float = Field(description="Price of the item in dollars.")
+    count: int = Field(description="Amount of instances of this item in stock.")
+    id: int = Field(description="Unique integer identifying the item.")
+    category: Category = Field(description="Category this item belongs to.")
 
 
 items: dict[int, Item] = {

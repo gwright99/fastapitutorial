@@ -51,12 +51,14 @@ docker push ghcr.io/gwright99/fastapitutorial:latest
 
 ## Run locally so I can test with `requests`
 ```bash
-$ fastapi run src/app/app.py --port 8080
+$ fastapi run src/app/app.py --port 8080 --reload
 $ pytest -vs   # Note that I changed ENDPOINT in test file.
 ```
 
 ## Testing Errors
 `HTTP 503` error result either from the Pod being broken or the HTTPRoute not having been updated.
+
+`TypeError: unsupported operand type(s) for |: 'type' and 'type'` <-- occurred when running app in container (used Python3.10 locally, container was based on Python3.9, `|` type operator introduced in Python3.10).
 
 # Badge
 ![Unit Tests](https://github.com/gwright99/fastapitutorial/actions/workflows/unittest.yaml/badge.svg)
