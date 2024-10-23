@@ -193,6 +193,7 @@ class ResponseDict(BaseModel):
 
 @api_router.get(
     "/responses/{some_value}",
+    status_code=211,
     response_model=ResponseDict,  # dict[str, str],
     responses={
         404: {"description": "Item not found."},
@@ -215,6 +216,8 @@ def tests_responses(
         return JSONResponse(
             status_code=403, content={"message": "Blah", "message2": "Balh2"}
         )
+
+    return {"id": 1, "payload": {"a": "a"}, "stats": {"age": 42, "height": 6.2}}
 
 
 app.include_router(router=api_router)
