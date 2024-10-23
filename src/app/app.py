@@ -1,10 +1,13 @@
 from fastapi import APIRouter, FastAPI, HTTPException, Path, Query, Request
+from fastapi.responses import JSONResponse
 
 # from pydantic import BaseModel
 from models.models import Add2, Category, Item, items
 
 app = FastAPI(
-    title="Recipe API",
+    title="Python Tutorial",
+    description="Project to better learn FastAPI and how it aligns with GitOps",
+    version="0.0.1",
     openapi_url="/openapi.json",
     # docs_url=f"/api/v1/docs",
     # redoc_url=f"/api/v1/redoc",
@@ -168,6 +171,50 @@ def delete_item(item_id: int, item: Item) -> dict[str, Item]:
     print(f"{item.name=}; {item.count=}")
     item = items.pop(item_id)
     return {"deleted": item}
+
+
+from pydantic import BaseModel
+
+
+class Message(BaseModel):
+    message: str
+    message2: str
+
+
+from typing_extensions import TypedDict
+
+
+class ResponseDict(BaseModel):
+    id: int
+    payload: dict[str, str]
+    stats: TypedDict("Stats", {"age": int, "height": float})
+    name: str = "ipsem lorem"
+
+
+@api_router.get(
+    "/responses/{some_value}",
+    response_model=ResponseDict,  # dict[str, str],
+    responses={
+        404: {"description": "Item not found."},
+        400: {"description": "Item not available for you, sucker!."},
+        403: {
+            "model": Message
+        },  # These show up as documented responses in the Responses section of each API route on the /docs site.
+    },
+)
+def tests_responses(
+    some_value: str = Path(
+        default=..., title="Where will this appear in docs?", min_length=1, max_length=8
+    )
+) -> dict[str, str] | None:
+    if some_value == "a":
+        return JSONResponse(status_code=404, content={"message": "aa"})
+    if some_value == "b":
+        return JSONResponse(status_code=400, content={"message": "bb"})
+    if some_value == "c":
+        return JSONResponse(
+            status_code=403, content={"message": "Blah", "message2": "Balh2"}
+        )
 
 
 app.include_router(router=api_router)
