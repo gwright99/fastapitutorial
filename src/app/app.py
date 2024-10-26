@@ -5,21 +5,33 @@ from pydantic import BaseModel, EmailStr
 # from pydantic import BaseModel
 from models.models import Add2, Category, Item, items
 
+from .core.config import settings
+
 app = FastAPI(
-    title="Python Tutorial",
+    title=settings.PROJECT_NAME,
     description="Project to better learn FastAPI and how it aligns with GitOps",
-    version="0.0.1",
+    version="settings.PROJECT_VERSION",
     openapi_url="/openapi.json",
     # docs_url=f"/api/v1/docs",
     # redoc_url=f"/api/v1/redoc",
     root_path="/tutorial",  # <------ Fixes K8s reverse proxy problem.
 )
 
+# DB
+from core.config import settings
+
+# from db.base import Base  # I don't understand why this pulls in 3 children models
+from db.session import engine
+
+# Define Routers
 api_router = APIRouter()
-
 arjan_router = APIRouter()
-
 tiangolo_router = APIRouter()
+
+
+# def create_tables():
+#     print(Base)
+#     Base.metadata.create_all(bind=engine)
 
 
 # Problem with handling trailing slash in browser
@@ -247,8 +259,20 @@ app.include_router(router=api_router)
 app.include_router(router=arjan_router)
 app.include_router(router=tiangolo_router)
 
-if __name__ == "__main__":
-    # Use for debugging purposes only
-    import uvicorn
+print("hello2")
 
-    uvicorn.run(app, host="0.0.0.0", port=8081, log_level="debug")
+
+# if __name__ == "__main__":
+#     # Use for debugging purposes only
+#     # import uvicorn
+#     print("hello")
+#     # print("Creating tables.")
+#     # create_tables()
+#     # uvicorn.run(app, host="0.0.0.0", port=8081, log_level="debug")
+
+# Putting these into a if __name__ == '__main__' block seems not to execute since program
+# is run via `fastapi run scr/app/app.py --port xxxx --reload`
+import uvicorn
+
+# create_tables()
+uvicorn.run(app, host="0.0.0.0", port=8081, log_level="debug")

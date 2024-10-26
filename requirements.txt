@@ -1,3 +1,20 @@
 #fastapi[standard]
 fastapi[all]
 requests==2.32.2
+uvicorn
+python-dotenv==1.0.1
+
+# Database: 
+# - https://pypi.org/project/databases/
+# - https://pypi.org/project/SQLAlchemy/
+# - https://pypi.org/project/psycopg2-binary/
+# I feel I'm going to regret using SQLAlchemy again but maybe it'll make more sense this time.
+# databases==0.9.0
+SQLAlchemy==2.0.36
+psycopg2-binary==2.9.10
+alembic==1.13.3
+pydantic
+pydantic[email]
+
+# https://pypi.org/project/passlib/
+passlib[bcrypt]
