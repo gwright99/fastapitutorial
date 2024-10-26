@@ -1,5 +1,6 @@
 from fastapi import APIRouter, FastAPI, HTTPException, Path, Query, Request
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel, EmailStr
 
 # from pydantic import BaseModel
 from models.models import Add2, Category, Item, items
@@ -17,6 +18,8 @@ app = FastAPI(
 api_router = APIRouter()
 
 arjan_router = APIRouter()
+
+tiangolo_router = APIRouter()
 
 
 # Problem with handling trailing slash in browser
@@ -173,9 +176,6 @@ def delete_item(item_id: int, item: Item) -> dict[str, Item]:
     return {"deleted": item}
 
 
-from pydantic import BaseModel
-
-
 class Message(BaseModel):
     message: str
     message2: str
@@ -217,11 +217,35 @@ def tests_responses(
             status_code=403, content={"message": "Blah", "message2": "Balh2"}
         )
 
-    return {"id": 1, "payload": {"a": "a"}, "stats": {"age": 42, "height": 6.2}}
+    return {"id": 1, "payload": {"a": "a"}}  # , "stats": {"age": 42, "height": 6.2}}
+
+
+# https://fastapi.tiangolo.com/tutorial/response-model/#return-the-same-input-data
+class UserIn(BaseModel):
+    username: str
+    password: str
+    email: EmailStr
+    full_name: str | None = None
+
+
+class UserOut(BaseModel):
+    username: str
+    email: EmailStr
+    full_name: str | None = None
+
+
+from typing import Any
+
+
+# This takes 4 values in, but only returns 3 (based on )
+@tiangolo_router.post("/user", response_model=UserOut)
+def create_user(user: UserIn) -> Any:
+    return user
 
 
 app.include_router(router=api_router)
 app.include_router(router=arjan_router)
+app.include_router(router=tiangolo_router)
 
 if __name__ == "__main__":
     # Use for debugging purposes only

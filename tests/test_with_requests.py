@@ -97,12 +97,41 @@ def test_update_item() -> None:
     assert item.count == 25
 
 
-def test_update_item() -> None:
+def test_delete_item() -> None:
     payload = Item(name="Hacksaw", price=19.99, count=25, id=4, category=Category.TOOLS)
     response = requests.delete(f"{ENDPOINT}/items/1", data=payload.json())
     print(f"Response is: {response.json()}")
 
     assert "deleted" in response.json().keys()
+
+
+def test_user_out() -> None:
+    payload = {
+        "username": "gwright99",
+        "email": "gwright99@hotmail.com",
+        "password": "abc",
+        "full_name": "G. Wright",
+    }
+    response = requests.post(f"{ENDPOINT}/user", json=payload)
+
+    assert response.status_code == 200
+    data = response.json()
+    print(data)
+
+
+def test_user_out_bad_data() -> None:
+    payload = {
+        "username": "gwright999",
+        # "email": "gwright99@hotmail.com",
+        "password": "abc",
+        # "full_name": "G. Wright",
+    }
+    response = requests.post(f"{ENDPOINT}/user", json=payload)
+
+    print(response.json())
+    assert response.status_code == 200
+    data = response.json()
+    print(data)
 
 
 # print(requests.get("http://127.0.0.1:8080/items?count=20").json())
