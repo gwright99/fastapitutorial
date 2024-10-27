@@ -41,25 +41,12 @@ $  export PYTHONPATH=~/fastapitutorial/src/app
 ```
 
 ### VSCODE / Pylance
-Add extra config in `<PROJ_ROOT>/.vscode/settings.json`
+Add extra config in `<PROJ_ROOT>/.vscode/settings.json`:
 
-```yaml
-{
-    "python.testing.pytestArgs": [
-        "."
-    ],
-    "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true,
+- pytest args
+- analysis / code completion paths
+- flake8 codes to ignore
 
-    "python.analysis.extraPaths": [
-        "~/fastapitutorial/src/app"
-    ],
-
-    "python.autoComplete.extraPaths": [
-        "~/fastapitutorial/src/app"
-    ]
-}
-```
 
 ## Testing
 See PKB (Python/Setup) for explanation re: `src` folder and how packages are locally installed (`pip3 install -e .`). Means one can now avoid the headaches of messing with `sys.path` in order for the separate peer `/tests` folder to get access to application code.
@@ -95,14 +82,6 @@ $ pytest -vs   # Note that I changed ENDPOINT in test file.
 ## SQLAlchemy
 Benefit: provide common way to interface regardless of underlying DB. 
 
-## TODO:
-- Pull secrets from something more secure than local .env
-- SqlAlchemy:
-    - relationship; back_populates
-    - index=True
-    - why does `from db.base import Base` pull in the children based on `Base`?
-- Alembic
-    - Why does Alembic need me to import derived classes into `db.base` and then work when `alembic/env.py` simply imports the Base class??
 
 ## Postgres commands
 ```bash
@@ -171,6 +150,29 @@ AttributeError: module 'bcrypt' has no attribute '__about__'
 
 Solveable by logging config or dataclass patch: https://github.com/pyca/bcrypt/issues/684
 
+
+## Design Patterns
+- "Repository Pattern" -- separate **route** logic from **database interaction (i.e. ORM)** code. Essentially, the route logic calls a separate function which will use the ORM to interact with the DB.
+
+
+## TODO:
+- Pull secrets from something more secure than local .env
+- General:
+    - Since `alembic upgrade head` creates tables in the DB, why do I need to run a creation function in app.py?
+      NOTE: Doesn't seem like I need to -- the alembic upgrade creates the tables and subsequent calls for DB 
+      transactions work. Tutorial badly explained here. [https://fastapitutorial.com/blog/creating-tables-in-fastapi/](https://fastapitutorial.com/blog/creating-tables-in-fastapi/)
+      HOWEVER,
+- SqlAlchemy:
+    - relationship; back_populates
+    - index=True
+    - why does `from db.base import Base` pull in the children based on `Base`?
+- Alembic
+    - Why does Alembic need me to import derived classes into `db.base` and then work when `alembic/env.py` simply imports the Base class??
+- FastAPI:
+    - Depends
+    - Dependency Injection / monkey-patching `get_db`?
+    - Why am I importing `sqlalchemy.orm > Session` when we did SessionLocal earlier? Oh, it's like an Interface?
+    - `orm_mode = true` works how?
 
 # Badge
 ![Unit Tests](https://github.com/gwright99/fastapitutorial/actions/workflows/unittest.yaml/badge.svg)

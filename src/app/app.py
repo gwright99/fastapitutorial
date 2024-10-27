@@ -1,3 +1,4 @@
+from apis.base import api_router as user_router
 from fastapi import APIRouter, FastAPI, HTTPException, Path, Query, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, EmailStr
@@ -19,8 +20,6 @@ app = FastAPI(
 
 # DB
 from core.config import settings
-
-# from db.base import Base  # I don't understand why this pulls in 3 children models
 from db.session import engine
 
 # Define Routers
@@ -29,9 +28,8 @@ arjan_router = APIRouter()
 tiangolo_router = APIRouter()
 
 
-# def create_tables():
-#     print(Base)
-#     Base.metadata.create_all(bind=engine)
+def include_routers(app):
+    app.include_router(user_router)
 
 
 # Problem with handling trailing slash in browser
@@ -259,6 +257,8 @@ app.include_router(router=api_router)
 app.include_router(router=arjan_router)
 app.include_router(router=tiangolo_router)
 
+include_routers(app)
+
 print("hello2")
 
 
@@ -274,5 +274,17 @@ print("hello2")
 # is run via `fastapi run scr/app/app.py --port xxxx --reload`
 import uvicorn
 
+# I don't understand why this pulls in 3 children models.
+# HOWEVER, this seem the import statement seems essential or else you get the following error when
+# trying to add a user:
+#    sqlalchemy.exc.InvalidRequestError: When initializing mapper Mapper[User(user)],
+#    expression 'Blog' failed to locate a name ('Blog'). If this is a class name, consider
+#    adding this relationship() to the <class 'db.models.user.User'> class after both dependent
+#    classes have been defined.
+from db.base import Base
+
+# def create_tables():
+#     Base.metadata.create_all(bind=engine)
 # create_tables()
+
 uvicorn.run(app, host="0.0.0.0", port=8081, log_level="debug")

@@ -11,5 +11,12 @@
 
     "python.autoComplete.extraPaths": [
         "~/fastapitutorial/src/app"
+    ],
+
+    //E128 under-indentation in Alembic migration files
+    //E122 continuation line under-indentation in Alembic migration files
+    "flake8.args": [
+        "--max-line-length=120",
+        "--ignore=E128,E122"
     ]
 }
