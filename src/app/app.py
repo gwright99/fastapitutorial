@@ -270,6 +270,8 @@ print("hello2")
 #     # create_tables()
 #     # uvicorn.run(app, host="0.0.0.0", port=8081, log_level="debug")
 
+import sys
+
 # Putting these into a if __name__ == '__main__' block seems not to execute since program
 # is run via `fastapi run scr/app/app.py --port xxxx --reload`
 import uvicorn
@@ -286,5 +288,18 @@ from db.base import Base
 # def create_tables():
 #     Base.metadata.create_all(bind=engine)
 # create_tables()
+
+# https://stackoverflow.com/questions/74116435/fastapi-is-not-quitting-when-pressing-ctrc
+# def receive_signal(signalNumber, frame):
+#     print("Received:", signalNumber)
+#     sys.exit()
+
+
+# @app.on_event("startup")
+# async def startup_event():
+#     import signal
+
+#     signal.signal(signal.SIGINT, receive_signal)
+
 
 uvicorn.run(app, host="0.0.0.0", port=8081, log_level="debug")

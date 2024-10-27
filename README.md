@@ -173,6 +173,7 @@ Solveable by logging config or dataclass patch: https://github.com/pyca/bcrypt/i
     - Dependency Injection / monkey-patching `get_db`?
     - Why am I importing `sqlalchemy.orm > Session` when we did SessionLocal earlier? Oh, it's like an Interface?
     - `orm_mode = true` works how?
+    - `async def` functions vs synchronous functions (eg. `create_user` synchronous but `create_blog` async)
 
 # Badge
 ![Unit Tests](https://github.com/gwright99/fastapitutorial/actions/workflows/unittest.yaml/badge.svg)

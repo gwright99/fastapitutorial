@@ -1,6 +1,7 @@
 from db.repository.user import create_new_user
 from db.session import get_db
 from fastapi import APIRouter, Depends, status
+from fastapi.responses import JSONResponse
 from schemas.user import ShowUser, UserCreate
 from sqlalchemy.orm import Session
 
@@ -16,11 +17,18 @@ class BadRequest(Exception):
     "/users",
     response_model=ShowUser,
     status_code=status.HTTP_201_CREATED,
-    responses={500: {"description": ""}},
+    responses={
+        201: {
+            "description": """For security purposes, will always send 201. Behind the scenes,
+                      brand new emails would get an activation link while existing emails get an access
+                      attempt notification."""
+        }
+    },
 )
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     # https://stackoverflow.com/questions/58642528/displaying-of-fastapi-validation-errors-to-end-users
-    # Creating same user twice generates a ResponseValidationError
+    # Creating same user twice generates a ResponseValidationError / IntegrityError
+    # Thinking ahead re: login best practices, capture the Validation error and send back 201.
 
     from psycopg2.errors import UniqueViolation
     from sqlalchemy.exc import IntegrityError
@@ -33,4 +41,11 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
         assert isinstance(e.orig, UniqueViolation)  # proves the original exception
         print(f"{e=}")
         print(f"{e.orig=}")
-        raise BadRequest from e
+        # raise BadRequest from e
+        # TO DO: Add some sort of notification event re: attempted access of already existing account.
+        return JSONResponse(
+            status_code=201,
+            content={
+                "message": f"Thanks for registering. A verification code has been sent to {user.email}."
+            },
+        )
