@@ -4,7 +4,7 @@ requests==2.32.2
 uvicorn
 python-dotenv==1.0.1
 
-# Database: 
+# Database:
 # - https://pypi.org/project/databases/
 # - https://pypi.org/project/SQLAlchemy/
 # - https://pypi.org/project/psycopg2-binary/
@@ -18,3 +18,13 @@ pydantic[email]
 
 # https://pypi.org/project/passlib/
 passlib[bcrypt]
+
+# https://pypi.org/project/pre-commit/
+pre-commit==4.0.1
+
+# JWT
+pyjwt
+
+# REtrieval of form data
+# https://pypi.org/project/python-multipart/
+python-multipart==0.0.16

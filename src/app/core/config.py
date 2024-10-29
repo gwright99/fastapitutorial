@@ -30,5 +30,10 @@ class Settings:
     # SQLITE
     # DATABASE_URL: str = "/tmp/fastapitutorial.db"
 
+    # JWT CONFIG
+    SECRET_KEY: str = os.getenv("SECRET_KEY")  # new
+    ALGORITHM = "HS256"  # new
+    ACCESS_TOKEN_EXPIRE_MINUTES = 30  # in mins  #new
+
 
 settings = Settings()

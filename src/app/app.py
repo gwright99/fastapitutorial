@@ -1,12 +1,21 @@
 from apis.base import api_router as user_router
-from fastapi import APIRouter, FastAPI, HTTPException, Path, Query, Request
+from core.config import settings
+from fastapi import APIRouter
+from fastapi import FastAPI
+from fastapi import HTTPException
+from fastapi import Path
+from fastapi import Query
+from fastapi import Request
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, EmailStr
+from models.models import Add2
+from models.models import Category
+from models.models import Item
+from models.models import items
+from pydantic import BaseModel
+from pydantic import EmailStr
 
+# from .core.config import settings
 # from pydantic import BaseModel
-from models.models import Add2, Category, Item, items
-
-from .core.config import settings
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -51,7 +60,6 @@ def include_routers(app):
 # BG issue has some extra flags for FastAPI which might work but explicit method seems cleaner to me.
 @app.middleware("http")
 async def some_middleware(request: Request, call_next):
-
     # See PKB for why the null check needs to happen (TestClient vs K8s HTTPRoute rewrite)
     print("request.url.path:", request.url.path)
     if ((request.url.path)[-1] == "/") and ((request.scope["path"])[0:-1] != ""):

@@ -1,4 +1,21 @@
 #!/bin/bash
+echo "testing post-pre-commit"
+
+# Run some tools prior to pre-commit to avoid potential problems.
+black src/
+
+# As per https://stackoverflow.com/questions/67793193/cowardly-refusing-to-install-hooks-with-core-hookspath-set:
+# The problem with global core.hooksPath configured is that the global hooks (in $HOME/.git/hooks/)
+# override the local ones in each repository. So, it is important to put some explicit delagation to
+# your $HOME/.git/hooks/pre-commit. I placed this on top of the file (after #! line, ofc.)
+
+# Run local pre-commit hook if it exists
+# if [ -e ./.git/hooks/pre-commit ]; then
+#   if ! (./.git/hooks/pre-commit "$@"); then
+#     exit 1;
+#   fi
+# fi
+# pre-commit
 
 # Taken from: https://github.com/gwright99/aws_lambda/blob/main/.githooks/pre-commit
 # if [[ $(git diff --cached --quiet --diff-filter=ACMR -- "app/*"; echo $?) == 1 ]]; then

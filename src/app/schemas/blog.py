@@ -1,13 +1,8 @@
-# fastapi.exceptions.ResponseValidationError: 1 validation errors:
-#   {'type': 'date_from_datetime_inexact', 'loc': ('response', 'created_at'), 'msg': 'Datetimes provided to dates should have zero time - e.g. be exact dates', 'input': datetime.datetime(2024, 10, 27, 9, 16, 40, 292227)}
-# from datetime import date
 from datetime import datetime
 from typing import Optional
 
-from pydantic import (  # root_validator < Pydantic v1; replaced by model_validator
-    BaseModel,
-    model_validator,
-)
+from pydantic import BaseModel
+from pydantic import model_validator
 
 
 class CreateBlog(BaseModel):
@@ -15,7 +10,7 @@ class CreateBlog(BaseModel):
     slug: str
     content: Optional[str] = None
 
-    # @root_validator(pre=True)   # Run this function before executing Pydantic validation (since it generates
+    # @pydantic.root_validator(pre=True)   # This function before executing Pydantic validation (since it generates
     # one of the required fields). Replace by `model_validator` in Pydantic v2.
     @model_validator(mode="before")
     def generate_slug(cls, values):
@@ -32,3 +27,7 @@ class ShowBlog(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class UpdateBlog(CreateBlog):  # < Note intheritance from CreateBlog Class
+    pass

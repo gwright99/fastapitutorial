@@ -4,7 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
 # addopts = "--cov=app --cov-fail-under=80 --cov-report=xml:coverage.xml"
-addopts = "--cov=app --cov-fail-under=80"
+# addopts = "--cov=app --cov-fail-under=80"
+addopts = "--cov=src --cov-fail-under=80"
 testpaths = [
     "tests",
 ]

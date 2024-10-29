@@ -17,6 +17,13 @@
     //E122 continuation line under-indentation in Alembic migration files
     "flake8.args": [
         "--max-line-length=120",
-        "--ignore=E128,E122"
+        "--ignore=E128,E122",
+        "--exclude=blog.py"
+    ],
+
+    // Ignore certain files -- aka --exclude ?
+    "flake8.ignorePatterns": [
+        "**/site-packages/**/*.py",
+        ".vscode/*.py"
     ]
 }

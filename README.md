@@ -184,7 +184,8 @@ If changes are made by pre-commit steps. commit fails -- you must look at the ch
 
 Seems easier to use VSCode plugins that do some of this automatically for me at save time. Alternatively, use `pre-commit run` PRIOR to `git commit` to see error that would have been surfaced/fixed by `git commit` (_downside is that you still need to add the files first_).
 
-To avoid pre-commit hooks use:: `git commit -m "my message" --no-verify`
+To avoid pre-commit hooks, use:: `git commit -m "my message" --no-verify`.
+To run pre-commit hooks on the entire codebase, use: `pre-commit run --all-files`.
 
 
 ## Multiple Config for same thing:
