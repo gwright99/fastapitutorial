@@ -1,18 +1,20 @@
 from typing import List
 
-from db.repository.blog import create_new_blog
-from db.repository.blog import delete_blog
-from db.repository.blog import list_blogs
-from db.repository.blog import retrieve_blog
-from db.repository.blog import update_blog
+from apis.v1.route_login import get_current_user
+from db.models.blog import Blog
+from db.models.user import User
+from db.repository.blog import (
+    create_new_blog,
+    delete_blog,
+    list_blogs,
+    protected_delete_blog,
+    protected_update_blog,
+    retrieve_blog,
+    update_blog,
+)
 from db.session import get_db
-from fastapi import APIRouter
-from fastapi import Depends
-from fastapi import HTTPException
-from fastapi import status
-from schemas.blog import CreateBlog
-from schemas.blog import ShowBlog
-from schemas.blog import UpdateBlog
+from fastapi import APIRouter, Depends, HTTPException, status
+from schemas.blog import CreateBlog, ShowBlog, UpdateBlog
 from sqlalchemy.orm import Session
 
 router = APIRouter()
@@ -62,22 +64,38 @@ def delete_a_blog(id: int, db: Session = Depends(get_db)):
     return {"msg": f"Successfully deleted blog with id {id}"}
 
 
-from apis.v1.route_login import get_current_user
-from db.models.user import User
-from db.repository.blog import protected_update_blog
+# Protected Versions of same APIs Above
+from app.typeslocal.types import UpdateBlogResponse
 
 
 @router.put("/blog/protected/{id}", response_model=ShowBlog)
 def protected_update_a_blog(
     id: int,
     blog: UpdateBlog,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    db: Session = Depends(dependency=get_db),
+    current_user: User = Depends(dependency=get_current_user),
 ):
-    blog = update_blog(id=id, blog=blog, author_id=current_user.id, db=db)
+    # new_blog: dict[str, str] | Blog = protected_update_blog(
+    new_blog: UpdateBlogResponse = protected_update_blog(
+        id=id, blog=blog, author_id=current_user.id, db=db
+    )
     if isinstance(blog, dict):
         raise HTTPException(
             detail=blog.get("error"),
             status_code=status.HTTP_404_NOT_FOUND,
         )
-    return blog
+    return new_blog
+
+
+@router.delete("/blog/protected/{id}")
+def protected_delete_a_blog(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    message = protected_delete_blog(id=id, author_id=current_user.id, db=db)
+    if message.get("error"):
+        raise HTTPException(
+            detail=message.get("error"), status_code=status.HTTP_400_BAD_REQUEST
+        )
+    return {"msg": f"Successfully deleted blog with id {id}"}

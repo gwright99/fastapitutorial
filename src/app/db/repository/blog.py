@@ -1,6 +1,5 @@
 from db.models.blog import Blog
-from schemas.blog import CreateBlog
-from schemas.blog import UpdateBlog
+from schemas.blog import CreateBlog, UpdateBlog
 from sqlalchemy import update
 from sqlalchemy.orm import Session
 
@@ -63,6 +62,8 @@ def delete_blog(id: int, author_id: int, db: Session):
     return {"msg": f"deleted blog with id {id}"}
 
 
+# Note different use of .first() between these 2 protected endpoints.
+# Is this on purpose or because author is just inconsistent?
 def protected_update_blog(id: int, blog: UpdateBlog, author_id: int, db: Session):
     blog_in_db = db.query(Blog).filter(Blog.id == id).first()
     if not blog_in_db:
@@ -74,3 +75,14 @@ def protected_update_blog(id: int, blog: UpdateBlog, author_id: int, db: Session
     db.add(blog_in_db)
     db.commit()
     return blog_in_db
+
+
+def protected_delete_blog(id: int, author_id: int, db: Session):
+    blog_in_db = db.query(Blog).filter(Blog.id == id)
+    if not blog_in_db.first():
+        return {"error": f"Could not find blog with id {id}"}
+    if not blog_in_db.first().author_id == author_id:  # new
+        return {"error": f"Only the author can delete a blog"}
+    blog_in_db.delete()
+    db.commit()
+    return {"msg": f"deleted blog with id {id}"}
