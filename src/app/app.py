@@ -1,21 +1,13 @@
+from typing import Any
+
+import uvicorn
 from apis.base import api_router as user_router
 from core.config import settings
-from fastapi import APIRouter
-from fastapi import FastAPI
-from fastapi import HTTPException
-from fastapi import Path
-from fastapi import Query
-from fastapi import Request
+from fastapi import APIRouter, FastAPI, HTTPException, Path, Query, Request
 from fastapi.responses import JSONResponse
-from models.models import Add2
-from models.models import Category
-from models.models import Item
-from models.models import items
-from pydantic import BaseModel
-from pydantic import EmailStr
+from pydantic import BaseModel, EmailStr
 
-# from .core.config import settings
-# from pydantic import BaseModel
+from models.models import Add2, Category, Item, items
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -27,9 +19,6 @@ app = FastAPI(
     root_path="/tutorial",  # <------ Fixes K8s reverse proxy problem.
 )
 
-# DB
-from core.config import settings
-from db.session import engine
 
 # Define Routers
 api_router = APIRouter()
@@ -199,33 +188,44 @@ class Message(BaseModel):
     message2: str
 
 
+from typing import Annotated
+
 from typing_extensions import TypedDict
 
 
 class ResponseDict(BaseModel):
     id: int
     payload: dict[str, str]
-    stats: TypedDict("Stats", {"age": int, "height": float})
+    # Call expression not allowed in type expression
+    # stats: TypedDict("Stats", {"age": int, "height": float})
+    stats: Annotated[dict, TypedDict("Stats", {"age": int, "height": float})]
     name: str = "ipsem lorem"
+
+
+class DashboardTest(BaseModel):
+    a: str
+    b: str
+    c: str
 
 
 @api_router.get(
     "/responses/{some_value}",
     status_code=211,
-    response_model=ResponseDict,  # dict[str, str],
+    # response_model=ResponseDict,  # dict[str, str],
     responses={
         404: {"description": "Item not found."},
         400: {"description": "Item not available for you, sucker!."},
         403: {
             "model": Message
         },  # These show up as documented responses in the Responses section of each API route on the /docs site.
+        409: {"model": DashboardTest, "description": "Text to show above model."},
     },
 )
 def tests_responses(
     some_value: str = Path(
         default=..., title="Where will this appear in docs?", min_length=1, max_length=8
     )
-) -> dict[str, str] | None:
+) -> JSONResponse | ResponseDict:  # dict[str, str]:
     if some_value == "a":
         return JSONResponse(status_code=404, content={"message": "aa"})
     if some_value == "b":
@@ -235,7 +235,9 @@ def tests_responses(
             status_code=403, content={"message": "Blah", "message2": "Balh2"}
         )
 
-    return {"id": 1, "payload": {"a": "a"}}  # , "stats": {"age": 42, "height": 6.2}}
+    # return {"id": 1, "payload": {"a": "a"}}  # , "stats": {"age": 42, "height": 6.2}}
+    return ResponseDict(id=1, payload={"a": "a"}, stats={"age": 42, "height": 6.2})
+    # return dict(a=1, fred=2)
 
 
 # https://fastapi.tiangolo.com/tutorial/response-model/#return-the-same-input-data
@@ -252,9 +254,6 @@ class UserOut(BaseModel):
     full_name: str | None = None
 
 
-from typing import Any
-
-
 # This takes 4 values in, but only returns 3 (based on )
 @tiangolo_router.post("/user", response_model=UserOut)
 def create_user(user: UserIn) -> Any:
@@ -267,22 +266,10 @@ app.include_router(router=tiangolo_router)
 
 include_routers(app)
 
-print("hello2")
-
-
-# if __name__ == "__main__":
-#     # Use for debugging purposes only
-#     # import uvicorn
-#     print("hello")
-#     # print("Creating tables.")
-#     # create_tables()
-#     # uvicorn.run(app, host="0.0.0.0", port=8081, log_level="debug")
-
-import sys
 
 # Putting these into a if __name__ == '__main__' block seems not to execute since program
 # is run via `fastapi run scr/app/app.py --port xxxx --reload`
-import uvicorn
+
 
 # I don't understand why this pulls in 3 children models.
 # HOWEVER, this seem the import statement seems essential or else you get the following error when

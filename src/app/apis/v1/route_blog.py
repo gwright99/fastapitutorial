@@ -22,16 +22,16 @@ router = APIRouter()
 
 # TODO: Align these names with underlying repository call
 @router.post("/blogs", response_model=ShowBlog, status_code=status.HTTP_201_CREATED)
-async def create_blog(blog: CreateBlog, db: Session = Depends(get_db)):
-    blog = create_new_blog(
+async def create_blog(blog: CreateBlog, db: Session = Depends(get_db)) -> Blog:
+    new_blog: Blog = create_new_blog(
         blog=blog, db=db, author_id=1
     )  # TODO: Make author_id variable.
-    return blog
+    return new_blog
 
 
 @router.get("/blog/{id}", response_model=ShowBlog)
-def get_blog(id: int, db: Session = Depends(get_db)):
-    blog = retrieve_blog(id=id, db=db)
+def get_blog(id: int, db: Session = Depends(get_db)) -> Blog:
+    blog: Blog | None = retrieve_blog(id=id, db=db)
     if not blog:
         raise HTTPException(
             detail=f"Blog with ID {id} does not exist.",
@@ -47,11 +47,14 @@ def get_all_blog(db: Session = Depends(get_db)):
 
 
 @router.put("/blog/{id}", response_model=ShowBlog)
-def update_a_blog(id: int, blog: UpdateBlog, db: Session = Depends(get_db)):
-    blog = update_blog(id=id, blog=blog, author_id=1, db=db)
-    if not blog:
-        raise HTTPException(detail=f"Blog with id {id} does not exist")
-    return blog
+def update_a_blog(id: int, blog: UpdateBlog, db: Session = Depends(get_db)) -> Blog:
+    updated_blog: Blog | None = update_blog(id=id, blog=blog, author_id=1, db=db)
+    if not updated_blog:
+        raise HTTPException(
+            detail=f"Blog with id {id} does not exist",
+            status_code=status.HTTP_404_NOT_FOUND,
+        )
+    return updated_blog
 
 
 @router.delete("/delete/{id}")

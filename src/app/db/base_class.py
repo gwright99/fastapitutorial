@@ -3,6 +3,7 @@
 Every model will inherit this 'Base' class and we will utilize this base class to
 create all the database tables. Centralize all common logic related to tables in this class.
 """
+
 from typing import Any
 
 from sqlalchemy import MetaData
@@ -12,8 +13,8 @@ from sqlalchemy.orm import as_declarative
 metadata_obj = MetaData()
 
 
-# TODO: Figure out as_declarative
-# Declaration of `id` here means that all derived Tables will have an `id` column.
+# `as_declarative() is same as `Base = declarative_base()` but using the decorator approach means
+# we can also declare helper methods / attributes that all inheriting tables will get automagically.
 @as_declarative()
 class Base:
     id: Any
@@ -23,8 +24,12 @@ class Base:
     metadata = metadata_obj
     __name__: str
 
-    # to generate tablename from classname. Prevents needing to declare on every Class like:
-    # __tablename__ = 'some_value'
-    @declared_attr
+    # Original code used the decorator: `@declared_attr`. This caused MyPy to go nuts.
+    # As per https://github.com/sqlalchemy/sqlalchemy/issues/9213 (which pointed to: https://docs.sqlalchemy.org/en/20/orm/mapping_api.html#sqlalchemy.orm.declared_attr),
+    # It actually needed two things:
+    #  1) Explicit definition of `@classmethod`
+    #  2) Modify attribute decorator with `.directive` (indicates it's not a Mapped attribute).
+    @declared_attr.directive
+    @classmethod
     def __tablename__(cls) -> str:
         return cls.__name__.lower()

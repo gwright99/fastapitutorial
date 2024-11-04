@@ -217,6 +217,10 @@ Figure out how best to organize all this both locally and when it gets [pushed t
     - `orm_mode = true` works how?
     - `async def` functions vs synchronous functions (eg. `create_user` synchronous but `create_blog` async)
 
+
+## Alembic Migrations
+Running the alembic migrations will not only apply changes to the database, but also create the tables and columns in the first place. This is why you don’t find any table creation command like `Base.metadata.create_all(bind=engine)` which you’ll often find in tutorials that don’t cover migrations.
+
 # Badge
 ![Unit Tests](https://github.com/gwright99/fastapitutorial/actions/workflows/unittest.yaml/badge.svg)
 ![PR Test](https://github.com/gwright99/fastapitutorial/actions/workflows/pr_test.yaml/badge.svg)

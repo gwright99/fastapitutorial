@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Any, Optional, Sequence
 
-from fastapi import APIRouter, FastAPI, HTTPException, Query, Request
+from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, HttpUrl
 

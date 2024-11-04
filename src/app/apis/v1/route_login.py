@@ -1,17 +1,11 @@
-from datetime import timedelta
-
 import jwt
 from core.config import settings  # new
 from core.hashing import Hasher
 from core.security import create_access_token
 from db.repository.login import get_user
 from db.session import get_db
-from fastapi import APIRouter
-from fastapi import Depends
-from fastapi import HTTPException
-from fastapi import status
-from fastapi.security import OAuth2PasswordBearer
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from schemas.token import Token
 from sqlalchemy.orm import Session
 

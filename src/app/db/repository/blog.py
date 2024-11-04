@@ -4,7 +4,7 @@ from sqlalchemy import update
 from sqlalchemy.orm import Session
 
 
-def create_new_blog(blog: CreateBlog, db: Session, author_id: int = 1):
+def create_new_blog(blog: CreateBlog, db: Session, author_id: int = 1) -> Blog:
     # blog: Blog = Blog(**blog.dict(), author_id=author_id)
     blog: Blog = Blog(**blog.model_dump(), author_id=author_id)
     db.add(blog)
