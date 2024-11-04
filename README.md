@@ -224,11 +224,21 @@ Running the alembic migrations will not only apply changes to the database, but 
 RUN everything from `src/`  <-- DOES THIS BREAK TESTING?
 
 
+Change how Alembic names migrations (e.g. `YYYYMMDDHHMMSS`): https://medium.com/alan/making-alembic-migrations-more-team-friendly-e92997f60eb2 (in `migrations/env.py` )
+
 ```bash
 # Run table migration
 $ cd ~/fastapitutorial/src
 $ ./scripts/boot_prestart.sh
 ```
+
+## SQLAlchemy
+I rewrote the `model` entries based on SQLAlchemy guidance here: [ORM Declarative Models](https://docs.sqlalchemy.org/en/20/changelog/whatsnew_20.html#orm-declarative-models). Items of note:
+
+- `Column` replaced with `mapped_column`
+- `Mapped[<type>]` can now live on left size.
+    - `Optional[<type>]` on left now means you don't need to declare `nullable=True` on right (absence of `Optional` will cause SQLAlchemy to set `nullable=False`).
+
 
 # Badge
 ![Unit Tests](https://github.com/gwright99/fastapitutorial/actions/workflows/unittest.yaml/badge.svg)
