@@ -1,13 +1,14 @@
 from logging.config import fileConfig
 
 from alembic import context
-from core.config import settings
+from sqlalchemy import engine_from_config, pool
+
+from app.core.config import settings
 
 # Load custom items - THIS WAS IMPORTANT - had to pull from the file with the other classes too to get them
 # to show up in the migration script. Not sure why.
 # from db.base_class import Base
-from db.base import Base
-from sqlalchemy import engine_from_config, pool
+from app.db.base import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

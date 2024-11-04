@@ -6,11 +6,15 @@
     "python.testing.pytestEnabled": true,
 
     "python.analysis.extraPaths": [
-        "~/fastapitutorial/src/app"
+        //"~/fastapitutorial/src",
+        //"~/fastapitutorial/src/app",
+        "./src"
     ],
 
     "python.autoComplete.extraPaths": [
-        "~/fastapitutorial/src/app"
+        // "~/fastapitutorial/src",
+        // "~/fastapitutorial/src/app",
+        "./src"
     ],
 
     //E128 under-indentation in Alembic migration files

@@ -1,15 +1,9 @@
-from datetime import datetime
-from datetime import timezone
+from datetime import datetime, timezone
 
-from db.base_class import Base
-from sqlalchemy import Boolean
-from sqlalchemy import Column
-from sqlalchemy import DateTime
-from sqlalchemy import ForeignKey
-from sqlalchemy import Integer
-from sqlalchemy import String
-from sqlalchemy import Text
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
+
+from app.db.base_class import Base
 
 
 class Blog(Base):

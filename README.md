@@ -221,6 +221,15 @@ Figure out how best to organize all this both locally and when it gets [pushed t
 ## Alembic Migrations
 Running the alembic migrations will not only apply changes to the database, but also create the tables and columns in the first place. This is why you don’t find any table creation command like `Base.metadata.create_all(bind=engine)` which you’ll often find in tutorials that don’t cover migrations.
 
+RUN everything from `src/`  <-- DOES THIS BREAK TESTING?
+
+
+```bash
+# Run table migration
+$ cd ~/fastapitutorial/src
+$ ./scripts/boot_prestart.sh
+```
+
 # Badge
 ![Unit Tests](https://github.com/gwright99/fastapitutorial/actions/workflows/unittest.yaml/badge.svg)
 ![PR Test](https://github.com/gwright99/fastapitutorial/actions/workflows/pr_test.yaml/badge.svg)

@@ -28,3 +28,5 @@ pyjwt
 # REtrieval of form data
 # https://pypi.org/project/python-multipart/
 python-multipart==0.0.16
+
+tenacity

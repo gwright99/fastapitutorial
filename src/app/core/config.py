@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 # (where invocation would be `fastapi run ../src/app/app.py --port 8080 --reload`)
 # The command below works when .env is in the PROJ_ROOT.
 env_path = Path(".") / ".env"
-print(f"{env_path.resolve()}")
+print(f"Dotenv file located at: {env_path.resolve()}")
 load_dotenv(dotenv_path=env_path)
 
 
@@ -23,7 +23,9 @@ class Settings:
         os.getenv("POSTGRES_PORT", 5432)
     )  # default postgres port is 5432
     POSTGRES_DB: str = os.getenv("POSTGRES_DB", "tdd")
-    DATABASE_URL: str = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
+    DATABASE_URL: str = (
+        f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
+    )
 
     # SQLITE
     # DATABASE_URL: str = "/tmp/fastapitutorial.db"

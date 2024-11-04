@@ -21,8 +21,8 @@ UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
 # Models inheriting from CRUDBase will be defined with a SQLAlchemy model as the first argument,
 # then the Pydantic model (aka schema) for creating and updating rows as the
 # second and third arguments.
-class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):  # 1
-    def __init__(self, model: Type[ModelType]):  # 2
+class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
+    def __init__(self, model: Type[ModelType]):
         """
         CRUD object with default methods to Create, Read, Update, Delete (CRUD).
         **Parameters**
@@ -48,15 +48,28 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):  # 1
         db.refresh(db_obj)
         return db_obj
 
+    def update(
+        self,
+        db: Session,
+        *,
+        db_obj: ModelType,
+        obj_in: Union[UpdateSchemaType, Dict[str, Any]]
+    ) -> ModelType:
+        obj_data = jsonable_encoder(db_obj)
+        if isinstance(obj_in, dict):
+            update_data = obj_in
+        else:
+            update_data = obj_in.dict(exclude_unset=True)
+        for field in obj_data:
+            if field in update_data:
+                setattr(db_obj, field, update_data[field])
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+        return db_obj
 
-from app.db.models.recipe import Recipe
-from app.schemas.recipe import RecipeCreate, RecipeUpdate
-
-
-# Defining a new CRUD class for Recipe. Pass in the associated SQLAlchemy Class & Pydantic models.
-class CRUDRecipe(CRUDBase[Recipe, RecipeCreate, RecipeUpdate]):  # 1
-    ...
-
-
-# Then create the actual object
-recipe = CRUDRecipe(Recipe)  # 2
+    def remove(self, db: Session, *, id: int) -> ModelType:
+        obj = db.query(self.model).get(id)
+        db.delete(obj)
+        db.commit()
+        return obj
