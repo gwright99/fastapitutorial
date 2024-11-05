@@ -6,7 +6,8 @@ from sqlalchemy.orm import Session
 
 import app.crud as crud
 import app.schemas as schemas
-from app.db.session import get_db
+from app.core.security import authenticate, create_access_token
+from app.db.session import get_current_user, get_db
 from app.models.user import User
 
 router = APIRouter()
@@ -25,7 +26,7 @@ def login(
         raise HTTPException(status_code=400, detail="Incorrect username or password")
 
     return {
-        "access_token": create_access_token(sub=user.id),
+        "access_token": create_access_token(sub=str(user.id)),
         "token_type": "bearer",
     }
 
@@ -48,4 +49,14 @@ def create_user_signup(
         )
     user = crud.user.create(db=db, obj_in=user_in)  # 6
 
+    return user
+
+
+@router.get("/me", response_model=schemas.ShowUser)
+def read_users_me(current_user: User = Depends(get_current_user)):
+    """
+    Fetch the current logged in user.
+    """
+
+    user = current_user
     return user
