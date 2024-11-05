@@ -32,9 +32,7 @@ class Settings(BaseSettings):
         os.getenv("POSTGRES_PORT", 5432)
     )  # default postgres port is 5432
     POSTGRES_DB: str = os.getenv("POSTGRES_DB", "tdd")
-    DATABASE_URL: str = (
-        f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
-    )
+    DATABASE_URL: str = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
 
     # SQLITE DB
     # DATABASE_URL: Optional[str] = "/tmp/fastapitutorial.db"

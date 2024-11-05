@@ -1,3 +1,4 @@
+import time
 from typing import Any
 
 import uvicorn
@@ -60,6 +61,16 @@ async def some_middleware(request: Request, call_next):
         request.scope["path"] = (request.scope["path"])[0:-1]
 
     return await call_next(request)
+
+
+# Used to time HTTP response speed.
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    process_time = time.time() - start_time
+    response.headers["X-Process-Time"] = str(process_time)
+    return response
 
 
 # @api_router.get("/", status_code=200)

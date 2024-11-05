@@ -1,6 +1,8 @@
+import asyncio
 from pathlib import Path
 from typing import Any, List, Optional, Sequence
 
+import httpx
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -15,6 +17,7 @@ from app.schemas.recipe import Recipe as sRecipe
 from app.templates.base import TEMPLATE_FOLDER_PATH_POSIX
 
 router = APIRouter()
+RECIPE_SUBREDDITS = ["recipes", "easyrecipes", "TopSecretRecipes"]
 
 # BASE_PATH = Path(__file__).resolve().parents[2]
 # TEMPLATES = Jinja2Templates(directory=str(BASE_PATH / "templates"))
@@ -23,7 +26,7 @@ print(f"Templates string is: {TEMPLATES}")
 
 
 # Made this `recipes` since `/recipe/view` was caught by `/recipe/{recipe_id}`
-@router.get("/view_all", status_code=200)
+@router.get("/recipe/all", status_code=200)
 def view_all_recipes(request: Request, db: Session = Depends(get_db)) -> HTMLResponse:
     """
 
@@ -43,7 +46,7 @@ def view_all_recipes(request: Request, db: Session = Depends(get_db)) -> HTMLRes
 
 
 @router.get(
-    "/{recipe_id}",
+    "/recipe/{recipe_id}",
     status_code=200,
     response_model=sRecipe,
     responses={
@@ -108,3 +111,50 @@ def fetch_recipe(
 #     RECIPES.append(recipe_entry.dict())  # 3
 
 #     return recipe_entry
+
+
+async def get_reddit_top_async(subreddit: str) -> list:
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"https://www.reddit.com/r/{subreddit}/top.json?sort=top&t=day&limit=5",
+            headers={"User-agent": "recipe bot 0.1"},
+        )
+
+    subreddit_recipes = response.json()
+    subreddit_data = []
+    for entry in subreddit_recipes["data"]["children"]:
+        score = entry["data"]["score"]
+        title = entry["data"]["title"]
+        link = entry["data"]["url"]
+        subreddit_data.append(f"{str(score)}: {title} ({link})")
+    return subreddit_data
+
+
+def get_reddit_top(subreddit: str) -> list:
+    response = httpx.get(
+        f"https://www.reddit.com/r/{subreddit}/top.json?sort=top&t=day&limit=5",
+        headers={"User-agent": "recipe bot 0.1"},
+    )
+    subreddit_recipes = response.json()
+    subreddit_data = []
+    for entry in subreddit_recipes["data"]["children"]:
+        score = entry["data"]["score"]
+        title = entry["data"]["title"]
+        link = entry["data"]["url"]
+        subreddit_data.append(f"{str(score)}: {title} ({link})")
+    return subreddit_data
+
+
+@router.get("/ideas/async")
+async def fetch_ideas_async() -> dict:
+    results = await asyncio.gather(
+        *[get_reddit_top_async(subreddit=subreddit) for subreddit in RECIPE_SUBREDDITS]
+    )
+    return dict(zip(RECIPE_SUBREDDITS, results))
+
+
+# This clashed with `/{recipe_id}` had to add namespace above for API route separation.
+@router.get("/ideas")
+def fetch_ideas() -> dict:
+    print("test")
+    return {key: get_reddit_top(subreddit=key) for key in RECIPE_SUBREDDITS}

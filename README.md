@@ -249,6 +249,9 @@ https://stackoverflow.com/questions/74400353/vscode-flake8-ignore
 ## `crud/` folder
 Super important for scaling. Revisit the logic.
 
+## `requests` vs `httpx`
+Can requests do async ye (httpx can).
+
 # Badge
 ![Unit Tests](https://github.com/gwright99/fastapitutorial/actions/workflows/unittest.yaml/badge.svg)
 ![PR Test](https://github.com/gwright99/fastapitutorial/actions/workflows/pr_test.yaml/badge.svg)
