@@ -71,7 +71,8 @@ docker push ghcr.io/gwright99/fastapitutorial:latest
 ```bash
 $ fastapi run src/app/app.py --port 8080 --reload
 # Change port to not conflict with postgres adminer:
-$ $ fastapi run src/app/app.py --port 5000 --reload
+# $ $ fastapi run src/app/app.py --port 5000 --reload
+$ cd ~/fastapitutorial/src && fastapi run app/app.py --port 5000 --reload    # gets .env values
 $ pytest -vs   # Note that I changed ENDPOINT in test file.
 ```
 
@@ -238,6 +239,11 @@ I rewrote the `model` entries based on SQLAlchemy guidance here: [ORM Declarativ
 - `Column` replaced with `mapped_column`
 - `Mapped[<type>]` can now live on left size.
     - `Optional[<type>]` on left now means you don't need to declare `nullable=True` on right (absence of `Optional` will cause SQLAlchemy to set `nullable=False`).
+
+
+## Flake8
+Moved config to `.flake8` file (_commented out most config in `.vscode/settings` except to point to `.flake8`). Commented out setup.cfg too (_must close VSCODE and reopen for this to work!_)
+https://stackoverflow.com/questions/74400353/vscode-flake8-ignore
 
 
 # Badge

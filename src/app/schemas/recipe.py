@@ -2,6 +2,14 @@ from typing import Sequence
 
 from pydantic import BaseModel, HttpUrl
 
+__all__ = [
+    "RecipeCreate",
+    "RecipeUpdate",
+    "Recipe",
+    "RecipeInDB",
+    "RecipeSearchResults",
+]
+
 
 class RecipeBase(BaseModel):
     label: str
@@ -45,3 +53,8 @@ class Recipe(RecipeInDBBase):
 # Properties properties stored in DB
 class RecipeInDB(RecipeInDBBase):
     pass
+
+
+class RecipeSearchResults(BaseModel):
+    #  Sequence (which is an iterable with support for len and __getitem__)
+    results: Sequence[Recipe]

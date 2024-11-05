@@ -1,9 +1,8 @@
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 
 from sqlalchemy.orm import Session
 
 from app.crud.base import CRUDBase
-from app.models import Blog
 from app.models.user import User
 from app.schemas.user import UserCreate, UserUpdate
 
@@ -18,7 +17,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         if isinstance(obj_in, dict):
             update_data = obj_in
         else:
-            update_data = obj_in.dict(exclude_unset=True)
+            update_data = obj_in.model_dump(exclude_unset=True)
 
         return super().update(db, db_obj=db_obj, obj_in=update_data)
 

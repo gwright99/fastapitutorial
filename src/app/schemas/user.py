@@ -2,6 +2,8 @@ from typing import Optional
 
 from pydantic import BaseModel, EmailStr, Field
 
+__all__ = ["UserCreate", "UserUpdate", "User", "ShowUser"]
+
 
 class UserBase(BaseModel):
     full_name: Optional[str] = None
@@ -17,7 +19,7 @@ class UserCreate(UserBase):
 
 # Properties to receive via API on update
 class UserUpdate(UserBase):
-    ...
+    pass
 
 
 class UserInDBBase(UserBase):
