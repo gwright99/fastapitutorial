@@ -252,6 +252,21 @@ Super important for scaling. Revisit the logic.
 ## `requests` vs `httpx`
 Can requests do async ye (httpx can).
 
+
+# Rename
+Changed `app.py` to `main.py` since it seemed to be conflicting with the overarching `app` folder.
+
+```
+# From `./scripts/boot_prestart.sh`
+/home/deeplearning/fastapitutorial/src
+Traceback (most recent call last):
+  File "/home/deeplearning/fastapitutorial/src/app/boot_02_load_initial_data.py", line 9, in <module>
+    from app import crud, models, schemas  # noqa: F401
+  File "/home/deeplearning/fastapitutorial/src/app/app.py", line 9, in <module>
+    from app.api.api_v1.router import api_router as v1_router
+ModuleNotFoundError: No module named 'app.api'; 'app' is not a package
+```
+
 # Badge
 ![Unit Tests](https://github.com/gwright99/fastapitutorial/actions/workflows/unittest.yaml/badge.svg)
 ![PR Test](https://github.com/gwright99/fastapitutorial/actions/workflows/pr_test.yaml/badge.svg)

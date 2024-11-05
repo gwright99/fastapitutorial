@@ -1,12 +1,23 @@
 import logging
+import os
 
 from sqlalchemy.orm.session import Session
 
+print("CWD")
+print(os.getcwd())
 # Packages autoload related classes via __init__.py
 from app import crud, models, schemas  # noqa: F401
 from app.assets.recipe_data import RECIPES
 from app.core.config import settings
 from app.db.session import SessionLocal
+
+# Traceback (most recent call last):
+#   File "/home/deeplearning/fastapitutorial/src/app/boot_02_load_initial_data.py", line 6, in <module>
+#     from app import crud, models, schemas  # noqa: F401
+#   File "/home/deeplearning/fastapitutorial/src/app/app.py", line 9, in <module>
+#     from app.api.api_v1.router import api_router as v1_router
+# ModuleNotFoundError: No module named 'app.api'; 'app' is not a package
+
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)

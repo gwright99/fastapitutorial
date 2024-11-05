@@ -21,7 +21,7 @@ class User(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     full_name: Mapped[Optional[str]]
     email: Mapped[str] = mapped_column(String, nullable=False, unique=True, index=True)
-    password: Mapped[str] = mapped_column(String, nullable=False)
+    # password: Mapped[str] = mapped_column(String, nullable=False)
     is_superuser: Mapped[bool] = mapped_column(Boolean, default=False)  # I left out ()
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)  # I left out ()
     # If "Blog" class in same file, this should work. Since they are separated, I cant make this work
@@ -36,3 +36,5 @@ class User(Base):
         back_populates="submitter",
         uselist=True,
     )
+
+    hashed_password: Mapped[str] = mapped_column(String, nullable=False)

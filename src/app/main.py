@@ -5,6 +5,7 @@ import uvicorn
 from fastapi import APIRouter, FastAPI, HTTPException, Path, Query, Request
 from fastapi.responses import JSONResponse
 
+# from app.api.api_v1.router import api_router as v1_router
 from app.api.api_v1.router import api_router as v1_router
 
 # from app.apis.base import api_router as master_router
