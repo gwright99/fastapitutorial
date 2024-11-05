@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 from app import crud
 from app.db.session import get_db
 from app.models.recipe import Recipe as mRecipe
+from app.schemas.http import HTTP404
 from app.schemas.recipe import Recipe as sRecipe
 from app.templates.base import TEMPLATE_FOLDER_PATH_POSIX
 
@@ -22,8 +23,8 @@ print(f"Templates string is: {TEMPLATES}")
 
 
 # Made this `recipes` since `/recipe/view` was caught by `/recipe/{recipe_id}`
-@router.get("/recipes/view", status_code=200)
-def show_recipes(request: Request, db: Session = Depends(get_db)) -> HTMLResponse:
+@router.get("/view_all", status_code=200)
+def view_all_recipes(request: Request, db: Session = Depends(get_db)) -> HTMLResponse:
     """
 
     Args:
@@ -41,11 +42,8 @@ def show_recipes(request: Request, db: Session = Depends(get_db)) -> HTMLRespons
     )
 
 
-from app.schemas.http import HTTP404
-
-
 @router.get(
-    "/recipe/{recipe_id}",
+    "/{recipe_id}",
     status_code=200,
     response_model=sRecipe,
     responses={

@@ -2,7 +2,7 @@
 # Annoying: some programs want config in setup.cfg, others in the toml, others in their own / a combination.
 # pytest and mypy config goes into toml
 max-line-length = 140
-exclude = .git,src/app/alembic/version/*,venv/,__pycache__
+exclude = .git,src/app/alembic/version/*,venv/,__pycache__,__init__.py,.mypy_cache,.pytest_cache
 
 # E128 under-indentation in Alembic migration files
 # E122 continuation line under-indentation in Alembic migration files

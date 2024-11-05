@@ -246,6 +246,9 @@ Moved config to `.flake8` file (_commented out most config in `.vscode/settings`
 https://stackoverflow.com/questions/74400353/vscode-flake8-ignore
 
 
+## `crud/` folder
+Super important for scaling. Revisit the logic.
+
 # Badge
 ![Unit Tests](https://github.com/gwright99/fastapitutorial/actions/workflows/unittest.yaml/badge.svg)
 ![PR Test](https://github.com/gwright99/fastapitutorial/actions/workflows/pr_test.yaml/badge.svg)

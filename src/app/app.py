@@ -4,7 +4,9 @@ import uvicorn
 from fastapi import APIRouter, FastAPI, HTTPException, Path, Query, Request
 from fastapi.responses import JSONResponse
 
-from app.apis.base import api_router as master_router
+from app.api.api_v1.router import api_router as v1_router
+
+# from app.apis.base import api_router as master_router
 from app.core.config import settings
 
 # from models.models import Add2, Category, Item, items
@@ -29,7 +31,8 @@ tiangolo_router = APIRouter()
 
 
 def include_routers(app):
-    app.include_router(master_router)
+    # app.include_router(master_router)
+    app.include_router(v1_router, prefix=settings.API_V1_STR)
 
 
 # Problem with handling trailing slash in browser
