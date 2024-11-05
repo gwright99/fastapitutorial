@@ -24,27 +24,38 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "FastAPI Tutorial"
     PROJECT_VERSION: str = "0.0.1"
 
-    # POSTGRES DB
+    # DATABASE (POSTGRES)
     POSTGRES_USER: str | None = os.getenv("POSTGRES_USER")
     POSTGRES_PASSWORD: str | None = os.getenv("POSTGRES_PASSWORD")
     POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "localhost")
-    POSTGRES_PORT: int = int(
-        os.getenv("POSTGRES_PORT", 5432)
-    )  # default postgres port is 5432
+    POSTGRES_PORT: int = int(os.getenv("POSTGRES_PORT", 5432))
     POSTGRES_DB: str = os.getenv("POSTGRES_DB", "tdd")
-    DATABASE_URL: str = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
+    POSTGRES_DATABASE_URL: str = (
+        f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
+    )
 
-    # SQLITE DB
-    # DATABASE_URL: Optional[str] = "/tmp/fastapitutorial.db"
+    # DATABASE (SQLITE)
+    # SQLITE_DATABASE_URL: Optional[str] = "/tmp/fastapitutorial.db"
+
+    # DATABASE (GENERIC)
+    SQLALCHEMY_DATABASE_URL: str = f"{POSTGRES_DATABASE_URL}"
 
     # JWT CONFIG
-    SECRET_KEY: Optional[str] = os.getenv("SECRET_KEY")
-    ALGORITHM: str = "HS256"  # new
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30  # in mins  #new
+    JWT_SECRET_KEY: Optional[str] = os.getenv("JWT_SECRET_KEY")
+    JWT_ALGORITHM: str = "HS256"  # new
+    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30  # in mins  #new
 
     # https://web.archive.org/web/20240720062221/https://christophergs.com/tutorials/ultimate-fastapi-tutorial-pt-8-project-structure-api-versioning/
     # API SETTINGS
     API_V1_STR: str = "/api/v1"
+
+    # AUTH
+    # Identifies the endpoint where a frontend must send user credentials to retrieve a token.
+    # The `oauth2_scheme` binds a OAuth2PasswordBearer with this URL.
+    # Any endpoint with a declared dependency on `oauth2_scheme` will look for a Bearer HTTP Header or
+    # else throw a 401.
+    # https://stackoverflow.com/questions/67307159/what-is-the-actual-use-of-oauth2passwordbearer
+    AUTH_TOKEN_URL: str = f"{API_V1_STR}/auth/token"
 
     # CORS
     # e.g: '["http://localhost", "http://localhost:4200", "http://local.dockertoolbox.tiangolo.com"]'

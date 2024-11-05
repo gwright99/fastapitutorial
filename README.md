@@ -267,6 +267,38 @@ Traceback (most recent call last):
 ModuleNotFoundError: No module named 'app.api'; 'app' is not a package
 ```
 
+## FASTAPI Trick
+```python
+@router.post("/token", response_model=Token)
+def login( db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends() ) -> Any:
+```
+
+Note how `db` must explicitly define `get_db` as its dependency.
+Note how `form_data` does not explicitly define its dependency. 
+
+Why?
+> Depends() without arguments is just a [shortcut](https://fastapi.tiangolo.com/tutorial/dependencies/classes-as-dependencies/?h=%20class%20depe#shortcut) for [classes as dependencies](https://fastapi.tiangolo.com/tutorial/dependencies/classes-as-dependencies/). [SOURCE](https://stackoverflow.com/questions/65059811/what-does-depends-with-no-parameter-do)
+
+aka `commons: CommonQueryParams = Depends(CommonQueryParams)` == `commons: CommonQueryParams = Depends()`.
+
+> When you use a Pydantic Model with Depends, it makes the Pydantic fields query-type parameters on the API endpoint. [SOURCE](https://stackoverflow.com/questions/65059811/what-does-depends-with-no-parameter-do)
+
+
+
+# This will try to extract the 'Authorization: Bearer xxx' value from a request to the endpoint and then pass
+# the value to the `/token` endpoint for extraction. If Bearer not present, returns 401.
+# https://stackoverflow.com/questions/67307159/what-is-the-actual-use-of-oauth2passwordbearer
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
+
+
+### JWT
+Using scopes for authorization
+Refresh tokens
+Password resets
+Single Sign On (SSO)
+Adding custom data to the JWT payload
+JSON Web Encryption
+
 # Badge
 ![Unit Tests](https://github.com/gwright99/fastapitutorial/actions/workflows/unittest.yaml/badge.svg)
 ![PR Test](https://github.com/gwright99/fastapitutorial/actions/workflows/pr_test.yaml/badge.svg)

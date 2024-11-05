@@ -10,6 +10,7 @@ from pydantic import BaseModel, HttpUrl
 from sqlalchemy.orm import Session
 
 from app import crud
+from app.core.auth import oauth2_scheme
 from app.db.session import get_db
 from app.models.recipe import Recipe as mRecipe
 from app.schemas.http import HTTP404
@@ -27,7 +28,9 @@ print(f"Templates string is: {TEMPLATES}")
 
 # Made this `recipes` since `/recipe/view` was caught by `/recipe/{recipe_id}`
 @router.get("/recipe/all", status_code=200)
-def view_all_recipes(request: Request, db: Session = Depends(get_db)) -> HTMLResponse:
+def view_all_recipes(
+    request: Request, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)
+) -> HTMLResponse:
     """
 
     Args:
