@@ -13,12 +13,14 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         return db.query(User).filter(User.email == email).first()
 
     def create(self, db: Session, *, obj_in: UserCreate) -> User:
-        create_data = obj_in.dict()
+        create_data = obj_in.model_dump()
         create_data.pop("password")
         db_obj = User(**create_data)
         db_obj.hashed_password = Hasher.get_password_hash(obj_in.password)
+
         db.add(db_obj)
         db.commit()
+        db.refresh(db_obj)
 
         return db_obj
 

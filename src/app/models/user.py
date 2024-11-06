@@ -28,7 +28,7 @@ class User(Base):
     # due to circular importing. Leave left-side definitions off and use right-side relationship forward
     # references.
     # blogs: Mapped[List["Blog"]] = relationship("Blog", back_populates="author")  # type: ignore
-    blogs = relationship("Blog", back_populates="author")
+    # blogs = relationship("Blog", back_populates="author")
     # TODO: Find out what this does.
     recipes = relationship(
         "Recipe",

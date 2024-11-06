@@ -330,6 +330,7 @@ venv/lib/python3.10/site-packages/fastapi/dependencies/utils.py:99:            f
 (venv) deeplearning@DESKTOP-1ST9352:~/fastapitutorial$ grep --recursive --line-number 'import multipart' venv/
 venv/lib/python3.10/site-packages/starlette/formparsers.py:12:    import multipart
 ```
+NOTE: This fixed the Pydantic deprecation warning in pytest but then subsequently broke FastAPI's OAuth2PasswordRequestFrom capabilities. So I reverted all changes. ["There was an error parsing the body"](https://github.com/fastapi/fastapi/issues/1604)
 
 ## Testing
 ```bash

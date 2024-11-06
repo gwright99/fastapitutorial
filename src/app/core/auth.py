@@ -22,13 +22,26 @@ def authenticate_user(
     password: str,
     db: Session,
 ) -> Optional[User]:
+    """
+    NOTE:
+    Hackers can use timing-based tools to determine if an account exists (assumes you'll only
+    execute a cryptologically expensive hash on a found account vs non-existing).
+
+    In cases were `user` not found, run a hash on a fake password before returning None.
+    """
+
+    # Return None if User does not exist or password is wrong.
     user = db.query(User).filter(User.email == email).first()
     if not user:
+        # hashed_password is "lorem"
+        Hasher.verify_password(
+            "ipsem", "$2b$12$jGWwfRodNgpUgFjbKvcz7O8Nf3MprXG5lHXQRHxH64ciQAqtNIH4m"
+        )
         return None
-    if not Hasher.verify_password(
-        plain_password=password, hashed_password=user.hashed_password
-    ):
+
+    if not Hasher.verify_password(password, user.hashed_password):
         return None
+
     return user
 
 
