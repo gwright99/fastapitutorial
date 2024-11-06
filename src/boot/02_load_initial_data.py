@@ -3,7 +3,7 @@ import logging
 from sqlalchemy.orm.session import Session
 
 # Packages autoload related classes via __init__.py
-from app import crud, models, schemas  # noqa: F401
+from app import crud, schemas
 from app.assets.recipe_data import RECIPES
 from app.core.config import settings
 from app.dependencies.dependencies import get_db

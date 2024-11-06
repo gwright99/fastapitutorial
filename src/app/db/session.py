@@ -14,4 +14,5 @@ engine = create_engine(settings.SQLALCHEMY_DATABASE_URL)
 
 # TODO: pre-warmed connection pool?
 print(f"{settings.SQLALCHEMY_DATABASE_URL=}")
+print(f"{settings.POSTGRES_DATABASE_URL=}")
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

@@ -1,6 +1,9 @@
-# import pytest
-# from fastapi.testclient import TestClient
-# from app.app import app
+import pytest
+from fastapi.testclient import TestClient
+
+from app.main import app
+
+
 # # ---------------------------------------------------------------------------------------------
 # def pytest_configure(config):
 #     """
@@ -33,7 +36,7 @@
 #     """
 #     pass
 # # ---------------------------------------------------------------------------------------------
-# @pytest.fixture(scope="function", autouse=True)
-# def client() -> TestClient:
-#     print("Creating TestClient")
-#     return TestClient(app)
+@pytest.fixture(scope="function", autouse=True)
+def client() -> TestClient:
+    print("Creating TestClient")
+    return TestClient(app)

@@ -37,6 +37,12 @@ def include_routers(app):
     app.include_router(v1_router, prefix=settings.API_V1_STR)
 
 
+# Troubelshooting -- dump all environment variables to see if .env loaded
+# import os
+# for name, value in os.environ.items():
+#     print("{0}: {1}".format(name, value))
+
+
 # Problem with handling trailing slash in browser
 # K8s HTTPRoute can rewrite prefixes but circa Sept 2024 seems unable to change suffixed easily.
 # Routing implementing in 2 parts:
