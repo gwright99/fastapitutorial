@@ -18,7 +18,7 @@ from app.core.config import settings
 app = FastAPI(
     title=settings.PROJECT_NAME,
     description="Project to better learn FastAPI and how it aligns with GitOps",
-    version="settings.PROJECT_VERSION",
+    version=settings.PROJECT_VERSION,
     openapi_url="/openapi.json",
     # docs_url=f"/api/v1/docs",
     # redoc_url=f"/api/v1/redoc",

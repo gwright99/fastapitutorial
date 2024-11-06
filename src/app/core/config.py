@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 from pydantic import AnyHttpUrl, EmailStr, field_validator
 from pydantic_settings import BaseSettings
 
+from app.schemas.user import UserBase
+
 # WARNING! `Path(".")` using the directory where the FastAPI invocation command came from,
 # NOT relative to this file. E.g "~/fastapitutorial" or "~/fastapitutorial/tests" #
 # (where invocation would be `fastapi run ../src/app/app.py --port 8080 --reload`)
@@ -67,8 +69,22 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
-    # Super Use Setup
-    FIRST_SUPERUSER: EmailStr = "admin@recipeapi.com"
+    # TODO: Replace this with something better like Vault / K8s Secret
+    # TODO: Figure out how to make this comparable between local testing and K8s.
+    SUPERUSERS: List[UserBase] = [
+        UserBase(
+            full_name="admin1",
+            email="admin1@admin.com",
+            is_superuser=True,
+            password=os.getenv("ADMIN1", "default"),
+        ),
+        UserBase(
+            full_name="admin2",
+            email="admin2@admin.com",
+            is_superuser=True,
+            password=os.getenv("ADMIN2", "default"),
+        ),
+    ]
 
     #   .../site-packages/pydantic/_internal/_config.py:291:
     # PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead.
