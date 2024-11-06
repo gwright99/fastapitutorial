@@ -2,9 +2,7 @@ from typing import Generator
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm.session import Session
 
-from app.core.auth import oauth2_scheme
 from app.core.config import settings
 
 # ------------------------------------------------------------------------------------
@@ -17,12 +15,3 @@ engine = create_engine(settings.SQLALCHEMY_DATABASE_URL)
 # TODO: pre-warmed connection pool?
 print(f"{settings.SQLALCHEMY_DATABASE_URL=}")
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-
-# Generate session for dependency injection (can be subbed out at testing time).
-def get_db() -> Generator:
-    try:
-        db: Session = SessionLocal()
-        yield db
-    finally:
-        db.close()  # type: ignore   <-- suppress Pylance 'possibly unbound' error

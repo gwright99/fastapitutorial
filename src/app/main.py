@@ -305,5 +305,6 @@ include_routers(app)
 
 #     signal.signal(signal.SIGINT, receive_signal)
 
-
-uvicorn.run(app, host="0.0.0.0", port=8081, log_level="debug")
+# Must be like this or we break testing due to import of app.main
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8081, log_level="debug")

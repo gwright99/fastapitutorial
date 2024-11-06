@@ -10,11 +10,19 @@ from pydantic import BaseModel, HttpUrl
 from sqlalchemy.orm import Session
 
 from app import crud
+from app.clients.reddit import RedditClient
 from app.core.auth import oauth2_scheme
-from app.db.session import get_db
+from app.dependencies.dependencies import (
+    caller_has_superuser_status,
+    get_current_user,
+    get_db,
+    get_reddit_client,
+)
 from app.models.recipe import Recipe as mRecipe
+from app.models.user import User
 from app.schemas.http import HTTP404
 from app.schemas.recipe import Recipe as sRecipe
+from app.schemas.recipe import RecipeCreate, RecipeUpdate, RecipeUpdateRestricted
 from app.templates.base import TEMPLATE_FOLDER_PATH_POSIX
 
 router = APIRouter()
@@ -99,21 +107,48 @@ def fetch_recipe(
 #     return payload
 
 
-# @router.post("/recipe", status_code=201, response_model=Recipe)
-# def create_recipe(*, recipe_in: RecipeCreate) -> dict:  # 2
-#     """
-#     Create a new recipe (in memory only)
-#     """
-#     new_entry_id = len(RECIPES) + 1
-#     recipe_entry = Recipe(
-#         id=new_entry_id,
-#         label=recipe_in.label,
-#         source=recipe_in.source,
-#         url=recipe_in.url,
-#     )
-#     RECIPES.append(recipe_entry.dict())  # 3
+@router.post("/", status_code=201, response_model=RecipeCreate)
+def create_recipe(
+    *,
+    recipe_in: RecipeCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> mRecipe:
+    """
+    Create a new recipe in the database.
+    """
+    if recipe_in.submitter_id != current_user.id:
+        raise HTTPException(
+            status_code=403, detail=f"You can only submit recipes as yourself"
+        )
+    recipe: mRecipe = crud.recipe.create(db=db, obj_in=recipe_in)
 
-#     return recipe_entry
+    return recipe
+
+
+@router.put("/", status_code=201, response_model=RecipeUpdate)
+def update_recipe(
+    *,
+    recipe_in: RecipeUpdateRestricted,
+    db: Session = Depends(get_db),
+) -> mRecipe:
+    """
+    Update recipe in the database.
+    """
+    recipe = crud.recipe.get(db, id=recipe_in.id)
+    if not recipe:
+        raise HTTPException(
+            status_code=400, detail=f"Recipe with ID: {recipe_in.id} not found."
+        )
+
+    # if recipe.submitter_id != current_user.id:
+    #     raise HTTPException(
+    #         status_code=403, detail=f"You can only update your recipes."
+    #     )
+
+    updated_recipe = crud.recipe.update(db=db, db_obj=recipe, obj_in=recipe_in)
+    db.commit()
+    return updated_recipe
 
 
 async def get_reddit_top_async(subreddit: str) -> list:
@@ -133,23 +168,11 @@ async def get_reddit_top_async(subreddit: str) -> list:
     return subreddit_data
 
 
-def get_reddit_top(subreddit: str) -> list:
-    response = httpx.get(
-        f"https://www.reddit.com/r/{subreddit}/top.json?sort=top&t=day&limit=5",
-        headers={"User-agent": "recipe bot 0.1"},
-    )
-    subreddit_recipes = response.json()
-    subreddit_data = []
-    for entry in subreddit_recipes["data"]["children"]:
-        score = entry["data"]["score"]
-        title = entry["data"]["title"]
-        link = entry["data"]["url"]
-        subreddit_data.append(f"{str(score)}: {title} ({link})")
-    return subreddit_data
-
-
-@router.get("/ideas/async")
-async def fetch_ideas_async() -> dict:
+# This endpoint needs the user to be a superuser in order to call it.
+@router.get("/ideas/async", description="Will reject anyone not a superuser.")
+async def fetch_ideas_async(
+    user: User = Depends(caller_has_superuser_status),
+) -> dict:
     results = await asyncio.gather(
         *[get_reddit_top_async(subreddit=subreddit) for subreddit in RECIPE_SUBREDDITS]
     )
@@ -158,6 +181,7 @@ async def fetch_ideas_async() -> dict:
 
 # This clashed with `/{recipe_id}` had to add namespace above for API route separation.
 @router.get("/ideas")
-def fetch_ideas() -> dict:
-    print("test")
-    return {key: get_reddit_top(subreddit=key) for key in RECIPE_SUBREDDITS}
+def fetch_ideas(reddit_client: RedditClient = Depends(get_reddit_client)) -> dict:
+    return {
+        key: reddit_client.get_reddit_top(subreddit=key) for key in RECIPE_SUBREDDITS
+    }

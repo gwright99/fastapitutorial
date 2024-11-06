@@ -1,8 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel
-from pydantic import model_validator
+from pydantic import BaseModel, model_validator
 
 
 class CreateBlog(BaseModel):
@@ -25,8 +24,9 @@ class ShowBlog(BaseModel):
     # created_at: date
     created_at: datetime
 
-    class Config:
-        orm_mode = True
+    # class Config:
+    #   orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 class UpdateBlog(CreateBlog):  # < Note intheritance from CreateBlog Class

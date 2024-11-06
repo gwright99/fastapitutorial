@@ -72,9 +72,15 @@ class Settings(BaseSettings):
     # Super Use Setup
     FIRST_SUPERUSER: EmailStr = "admin@recipeapi.com"
 
-    class Config:
-        # Specify that all config settings are case-sensitive.
-        case_sensitive = True
+    #   .../site-packages/pydantic/_internal/_config.py:291:
+    # PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead.
+    # Deprecated in Pydantic V2.0 to be removed in V3.0.
+    # See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.9/migration/
+
+    # class Config:
+    #     # Specify that all config settings are case-sensitive.
+    #     case_sensitive = True
+    model_config = {"case_sensitive": True}
 
 
 settings = Settings()

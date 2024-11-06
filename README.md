@@ -299,6 +299,66 @@ Single Sign On (SSO)
 Adding custom data to the JWT payload
 JSON Web Encryption
 
+
+## Deprecation Warning (multipart vs python_multipart)
+```bash
+venv/lib/python3.10/site-packages/fastapi/dependencies/utils.py:94
+  /home/deeplearning/fastapitutorial/venv/lib/python3.10/site-packages/fastapi/dependencies/utils.py:94: PendingDeprecationWarning: Please use `import python_multipart` instead.
+    from multipart import __version__
+```
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+- `nano venv/lib/python3.10/site-packages/starlette/formparsers.py`
+- nano venv/lib/python3.10/site-packages/starlette/requests.py`
+
+```python
+#    from multipart.multipart import parse_options_header
+    from python_multipart.multipart import parse_options_header
+```
+
+Fix:
+Manually patched all the following lines: `multipart` -> `python_multipart`
+
+```bash
+venv/lib/python3.10/site-packages/starlette/requests.py:16:    from multipart.multipart import parse_options_header
+venv/lib/python3.10/site-packages/starlette/formparsers.py:13:    from multipart.multipart import parse_options_header
+venv/lib/python3.10/site-packages/starlette/formparsers.py:19:    from multipart.multipart import MultipartCallbacks, QuerystringCallbacks
+venv/lib/python3.10/site-packages/fastapi/dependencies/utils.py:94:        from multipart import __version__
+venv/lib/python3.10/site-packages/fastapi/dependencies/utils.py:99:            from multipart.multipart import parse_options_header
+
+(venv) deeplearning@DESKTOP-1ST9352:~/fastapitutorial$ grep --recursive --line-number 'import multipart' venv/
+venv/lib/python3.10/site-packages/starlette/formparsers.py:12:    import multipart
+```
+
+## Testing
+```bash
+cd ~/fastapittutorial/ && pytest -vs tests/test_recipe.py
+```
+
+Using `mocking` library MagicMock and FastAPI dependency replacement to test endpoints. Replacement method is interesting but definitely is more to the "totally mocked out".
+
+
+# Gunicorn vs Uvicorn
+Traditional suggestion when deploying FastAPI app to prod is run **both** Uvicorn and Gunicorn (_referred to a `Guvicorn` _) to get best of concurrency parallelism:
+
+1. Tell Uvicorn to run multiple worker processes (Gunicorn-compatible Uvicorn worker class).
+2. Include Gunicorn as a management tool for:
+    
+    - Managing dead processses / restarting stuck processes
+    - Take advantage of multi-core CPUs
+
+aka:
+```bash
+# Local dev
+$ uvicorn --reload
+
+# Prod
+$ gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:80
+```
+
+For deploying to Kubernetes, however, [FastAPI docs](https://fastapi.tiangolo.com/bn/deployment/docker/#replication-number-of-processes) suggest a **single process per pod**. [Reddit thread](https://www.reddit.com/r/FastAPI/comments/1dkpu11/does_uvicorn_handle_multiple_requests_at_once/) says K8s is doing same thing as Gunicorn -- health checks and recycling dead pods. Better to have single processes sipping a single CPU and min RAM rather than fatter pod with requires more resources (e.g. 1 CPU / 150 MB RAM per Pod vs 4 CPU and 600 MB RAM per Pod).
+
 # Badge
 ![Unit Tests](https://github.com/gwright99/fastapitutorial/actions/workflows/unittest.yaml/badge.svg)
 ![PR Test](https://github.com/gwright99/fastapitutorial/actions/workflows/pr_test.yaml/badge.svg)

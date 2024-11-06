@@ -6,7 +6,7 @@ from sqlalchemy.orm.session import Session
 from app import crud, models, schemas  # noqa: F401
 from app.assets.recipe_data import RECIPES
 from app.core.config import settings
-from app.db.session import get_db
+from app.dependencies.dependencies import get_db
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)

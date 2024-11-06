@@ -7,5 +7,8 @@ __all__ = ["HTTP404"]
 class HTTP404(BaseModel):
     detail: str
 
-    class Config:
-        schema_extra = {"example": {"details": "HTTPException raised."}}
+    # class Config:
+    #   schema_extra = {"example": {"details": "HTTPException raised."}}
+    model_config = {
+        "json_schema_extra": {"example": {"details": "HTTPException raised."}}
+    }

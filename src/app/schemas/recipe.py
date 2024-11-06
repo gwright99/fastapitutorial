@@ -28,6 +28,11 @@ class RecipeUpdate(RecipeBase):
     label: str
 
 
+class RecipeUpdateRestricted(BaseModel):
+    id: int
+    label: str
+
+
 # Properties shared by models stored in DB
 # Why make the distinction between a Recipe and RecipeInDB? This allows us in future to
 # # separate fields which are only relevant for the DB, or which we don’t want to return
@@ -41,8 +46,10 @@ class RecipeInDBBase(RecipeBase):
     # Without orm_mode, if you returned a SQLAlchemy model from your path operation,
     # it wouldn’t include the relationship data.
     # TODO: Figure this out.
-    class Config:
-        orm_mode = True
+
+    # class Config:
+    #   orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 # Properties to return to client

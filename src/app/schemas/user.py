@@ -25,8 +25,9 @@ class UserUpdate(UserBase):
 class UserInDBBase(UserBase):
     id: Optional[int] = None
 
-    class Config:
-        orm_mode = True
+    # class Config:
+    #   orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 # Additional properties to return via API
@@ -40,5 +41,6 @@ class ShowUser(BaseModel):
     is_active: bool
 
     # Tell Pydantic to convert even non-dict obj to JSON
-    class Config:
-        orm_mode = True
+    # class Config:
+    #   orm_mode = True
+    model_config = {"from_attributes": True}
