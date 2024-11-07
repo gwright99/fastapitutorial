@@ -1,6 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 
+from app.core.config import settings
 from app.main import app
 
 
@@ -36,7 +37,85 @@ from app.main import app
 #     """
 #     pass
 # # ---------------------------------------------------------------------------------------------
-@pytest.fixture(scope="function", autouse=True)
-def client() -> TestClient:
+@pytest.fixture(scope="function", autouse=False)
+def client_anon() -> TestClient:
     print("Creating TestClient")
     return TestClient(app)
+
+
+@pytest.fixture(scope="function", autouse=False)
+def client_auth(request) -> TestClient:
+    # def get_token_header(username: str, password: str) -> dict:
+    """
+    curl -X 'POST' \
+        'http://localhost:5000/tutorial/api/v1/auth/token' \
+        -H 'accept: application/json' \
+        -H 'Content-Type: application/x-www-form-urlencoded' \
+        -d 'grant_type=password&username=fake&password=user&scope=&client_id=string&client_secret=string'
+
+    result={
+        'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWNjZXNzX3Rva2VuIiwiZXhwIjoxN...', 
+        'token_type': 'bearer'}
+
+    Call this fixture via:
+      @pytest.mark.parametrize('tester', [['var1', 'var2']], indirect=True)
+      def test_tc1(self, tester):
+    """
+    client: TestClient = TestClient(app)
+
+    form_data = {
+        "username": request.param["username"],
+        "password": request.param["password"],
+    }
+
+    response = client.post(
+        url=settings.AUTH_TOKEN_URL,
+        data=form_data,
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+    )
+
+    if access_token := response.json().get("access_token", None):
+        auth_header = {"Authorization": f"Bearer {access_token}"}
+        return TestClient(app, headers=auth_header)
+    else:
+        raise KeyError("Failed to retrieve FastAPI access token.")
+
+
+# def get_token_header(username: str, password: str) -> dict:
+#     """
+#     curl -X 'POST' \
+#         'http://localhost:5000/tutorial/api/v1/auth/token' \
+#         -H 'accept: application/json' \
+#         -H 'Content-Type: application/x-www-form-urlencoded' \
+#         -d 'grant_type=password&username=fake&password=user&scope=&client_id=string&client_secret=string'
+
+#     result={
+#         'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWNjZXNzX3Rva2VuIiwiZXhwIjoxN...',
+#         'token_type': 'bearer'}
+#     """
+#     local_client: TestClient = client()
+
+#     form_data = {
+#         "username": username,
+#         "password": password,
+#     }
+
+#     response = local_client.post(
+#         url=settings.AUTH_TOKEN_URL,
+#         data=form_data,
+#         headers={"Content-Type": "application/x-www-form-urlencoded"},
+#     )
+
+#     return {"Authorization": f"Bearer {response.json()['access_token']}"}
+
+
+# def test_get_list(client, test_user):
+#     token = test_login(client, test_user)
+#     response = client.get("/lists/1", headers={"Authorization": f"Bearer {token}"})
+#     assert response.status_code == 200
+#     assert response.json()["id"] == 1
+
+
+# result = response.json()
+# print(f"{result=}")
+# assert response.status_code == 200

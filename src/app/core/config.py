@@ -8,10 +8,9 @@ from pydantic_settings import BaseSettings
 
 from app.schemas.user import UserBase
 
-# WARNING! `Path(".")` using the directory where the FastAPI invocation command came from,
-# NOT relative to this file. E.g "~/fastapitutorial" or "~/fastapitutorial/tests" #
-# (where invocation would be `fastapi run ../src/app/app.py --port 8080 --reload`)
-# The command below works when .env is in the PROJ_ROOT.
+# WARNING! `Path(".")` uses the directory where the FastAPI invocation command came from; NOT relative to this file.
+# E.g `~/fastapitutorial$ fastapi run src/app/main.py --port 5000 --reload`
+# The command below works when .env is in the PROJ_ROOT (also works for peer `tests/` folder).
 env_path = Path(".") / ".env"
 print(f"Dotenv file located at: {env_path.resolve()}")
 load_dotenv(dotenv_path=env_path)

@@ -1,27 +1,60 @@
+import pytest
+
 from app.core.config import settings
+from tests.conftest import client_auth
+
+legitimate_user_creds = {
+    "username": settings.SUPERUSERS[0].email,
+    "password": settings.SUPERUSERS[0].password,
+}
+
+legitimate_user_creds2 = {
+    "username": settings.SUPERUSERS[1].email,
+    "password": settings.SUPERUSERS[1].password,
+}
+
+bad_user_creds = {
+    "username": "foo",
+    "password": "bar",
+}
 
 
-def test_token_success(client) -> None:
-    """
-    curl -X 'POST' \
-        'http://localhost:5000/tutorial/api/v1/auth/token' \
-        -H 'accept: application/json' \
-        -H 'Content-Type: application/x-www-form-urlencoded' \
-        -d 'grant_type=password&username=fake&password=user&scope=&client_id=string&client_secret=string'
-  """
+@pytest.mark.parametrize(
+    "client_auth",
+    [legitimate_user_creds, legitimate_user_creds2],
+    indirect=True,
+)
+def test_token_success(client_auth) -> None:
 
-    # https://stackoverflow.com/questions/75042410/fastapi-testclient-not-able-to-send-post-request-using-form-data
-    form_data = {
-        "username": settings.SUPERUSERS[0].email,
-        "password": settings.SUPERUSERS[0].password,
-    }
+    print(f"Headers are: {client_auth.headers['authorization']}")
+    assert not (client_auth.headers["authorization"]).endswith(" ")
 
-    response = client.post(
-        url=settings.AUTH_TOKEN_URL,
-        data=form_data,
-        headers={"Content-Type": "application/x-www-form-urlencoded"},
-    )
+    # result = response.json()
+    # print(f"{result=}")
+    # assert response.status_code == 200
 
-    result = response.json()
-    print(f"{result=}")
+
+# @pytest.mark.parametrize(
+#     "client_auth",
+#     [bad_user_creds],
+#     indirect=True,
+# )
+def test_token_fail() -> None:
+
+    with pytest.raises(KeyError) as excinfo:
+        client_auth(bad_user_creds)
+    assert str(excinfo.value == "Failed to retrieve FastAPI access token.")
+
+
+# def test_get_endpoint_list():
+#     response = client.get("/", headers={
+#         "Authorization": f'Bearer {os.environ["BEARER_TOKEN"]}'})
+#     assert response.status_code == 200
+#     assert response.json() == {"Available Endpoints": ENDPOINT_LIST}
+
+
+def test_protected_endpoint_with_no_token(client) -> None:
+    response = client.get("/api/v1/recipes/recipe/all")
+
     assert response.status_code == 200
+    assert response.json() == {"msg": "I aint dead!"}
