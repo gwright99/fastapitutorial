@@ -1,3 +1,5 @@
+from typing import Optional
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -37,15 +39,7 @@ from app.main import app
 #     """
 #     pass
 # # ---------------------------------------------------------------------------------------------
-@pytest.fixture(scope="function", autouse=False)
-def client_anon() -> TestClient:
-    print("Creating TestClient")
-    return TestClient(app)
-
-
-@pytest.fixture(scope="function", autouse=False)
-def client_auth(request) -> TestClient:
-    # def get_token_header(username: str, password: str) -> dict:
+def request_access_token(creds: dict[str, str]) -> TestClient:
     """
     curl -X 'POST' \
         'http://localhost:5000/tutorial/api/v1/auth/token' \
@@ -56,16 +50,12 @@ def client_auth(request) -> TestClient:
     result={
         'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWNjZXNzX3Rva2VuIiwiZXhwIjoxN...', 
         'token_type': 'bearer'}
-
-    Call this fixture via:
-      @pytest.mark.parametrize('tester', [['var1', 'var2']], indirect=True)
-      def test_tc1(self, tester):
     """
     client: TestClient = TestClient(app)
 
     form_data = {
-        "username": request.param["username"],
-        "password": request.param["password"],
+        "username": creds["username"],
+        "password": creds["password"],
     }
 
     response = client.post(
@@ -79,6 +69,28 @@ def client_auth(request) -> TestClient:
         return TestClient(app, headers=auth_header)
     else:
         raise KeyError("Failed to retrieve FastAPI access token.")
+
+
+@pytest.fixture(scope="function", autouse=False)
+def client_anon() -> TestClient:
+    print("Creating TestClient")
+    return TestClient(app)
+
+
+@pytest.fixture(scope="function", autouse=False)
+def client_auth(request) -> TestClient:
+    # def get_token_header(username: str, password: str) -> dict:
+    """
+    Call this fixture via:
+      @pytest.mark.parametrize('client_auth', [legitimate_user_creds, ...], indirect=True)
+      def test_some_test_function(self, client_auth):
+    """
+    return request_access_token(request.param)
+
+    # form_data = {
+    #     "username": request.param["username"],
+    #     "password": request.param["password"],
+    # }
 
 
 # def get_token_header(username: str, password: str) -> dict:

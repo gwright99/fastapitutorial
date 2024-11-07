@@ -50,9 +50,19 @@ def view_all_recipes(
     """
     print(f"Templates string is: {TEMPLATES}")
     recipes: List[mRecipe] = crud.recipe.get_multi(db=db, limit=10)
+    # return TEMPLATES.TemplateResponse(
+    #     "index.html",
+    #     {"request": request, "recipes": recipes},
+    # )
+
+    # tests/test_with_testclient/test_auth.py::test_token_protected_endpoint_success[client_auth0]
+    #   /home/deeplearning/fastapitutorial/venv/lib/python3.10/site-packages/starlette/templating.py:161: DeprecationWarning: The `name` is not the first parameter anymore. The first parameter should be the `Request` instance.
+    #   Replace `TemplateResponse(name, {"request": request})` by `TemplateResponse(request, name)`.
+    #     warnings.warn(
     return TEMPLATES.TemplateResponse(
-        "index.html",
-        {"request": request, "recipes": recipes},
+        request=request,
+        name="index.html",
+        context={"recipes": recipes},
     )
 
 
