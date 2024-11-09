@@ -389,6 +389,7 @@ Testing GHA via ACT:
 3. Split testing into two sections:
     - Emulation with TestClient
     - Running actual instance of FastAPI server with localhost calls via requests.
+4. Updated `act` command to accommodate need for .env file for fastapi instanc (from `~/fastapitutorial`): `gh act -j test -W .github/workflows/unittest.yaml -s ENVFILE=$(base64 .env -w 0)` 
 
 # Badge
 ![Unit Tests](https://github.com/gwright99/fastapitutorial/actions/workflows/unittest.yaml/badge.svg)
