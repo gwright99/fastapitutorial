@@ -1,4 +1,4 @@
-name: Run Unit Tests
+name: unittest
 
 on:
   push:
@@ -52,9 +52,22 @@ jobs:
           echo "$GITHUB_CONTEXT"
 
       - name: Test with pytest
+        env:
+          # https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables
+          PYTHONPATH: $GITHUB_WORKSPACE/src
         run: |
           # pytest tests/ --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
-          pytest tests/ --doctest-modules --junitxml=junit/test-results.xml --cov=./ --cov-report=html
+          # pytest tests/ --doctest-modules --junitxml=junit/test-results.xml --cov=./ --cov-report=html
+          # Targeting specific folders to keep scope tight.
+          # pytest tests/test_with_testclient tests/test_with_requests --doctest-modules --junitxml=junit/test-results.xml --cov=./ --cov-report=html
+          
+          pytest tests/test_with_testclient --doctest-modules --junitxml=junit/test-results.xml --cov=./ --cov-report=html
+
+          # Run server in background and right with requests to localhost
+          fastapi run src/app/main.py --port 5000 &
+          pytest tests/test_with_requests --doctest-modules --junitxml=junit/test-results.xml --cov=./ --cov-report=html
+
+
 
       # - if: ${{ env.ACT_LOCAL == 'true' }}
       - if: ${{ env.PUBLISH_COVERAGE == 'true' }}

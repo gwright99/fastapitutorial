@@ -381,6 +381,15 @@ Nov 9/2024 - rewrote components to allow same project structure / setup to work 
     - Activated `pytest_sessionfinish` to delete test db from local file system.
 conftest destroy db
 
+
+Testing GHA via ACT: 
+
+1. Execute with: `~/fastapitutorial$ gh act -j test -W .github/workflows/unittest.yaml`
+2. To emulate local upload had to add extra config to `~/.config/act/actrc`  (pointing to /tmp/.act). See: [https://github.com/nektos/act/issues/1929](https://github.com/nektos/act/issues/1929)
+3. Split testing into two sections:
+    - Emulation with TestClient
+    - Running actual instance of FastAPI server with localhost calls via requests.
+
 # Badge
 ![Unit Tests](https://github.com/gwright99/fastapitutorial/actions/workflows/unittest.yaml/badge.svg)
 ![PR Test](https://github.com/gwright99/fastapitutorial/actions/workflows/pr_test.yaml/badge.svg)
