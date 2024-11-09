@@ -61,14 +61,14 @@ jobs:
           # pytest tests/ --doctest-modules --junitxml=junit/test-results.xml --cov=./ --cov-report=html
           # Targeting specific folders to keep scope tight.
           # pytest tests/test_with_testclient tests/test_with_requests --doctest-modules --junitxml=junit/test-results.xml --cov=./ --cov-report=html
-          
-          pytest tests/test_with_testclient --doctest-modules --junitxml=junit/test-results.xml --cov=./ --cov-report=html
 
           # Create the .env file from secret if not present (i.e. running from `act`)
           if [ ! -f .env ]; then
             echo ".env file not present. Creating."
             echo $ENVFILE > .env
           fi
+          
+          pytest tests/test_with_testclient --doctest-modules --junitxml=junit/test-results.xml --cov=./ --cov-report=html
 
           # Run server in background and right with requests to localhost
           fastapi run src/app/main.py --port 5000 &
