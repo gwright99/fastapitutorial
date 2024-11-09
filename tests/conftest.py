@@ -48,7 +48,7 @@ def request_access_token(creds: dict[str, str]) -> TestClient:
         -d 'grant_type=password&username=fake&password=user&scope=&client_id=string&client_secret=string'
 
     result={
-        'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWNjZXNzX3Rva2VuIiwiZXhwIjoxN...', 
+        'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWNjZXNzX3Rva2VuIiwiZXhwIjoxN...',
         'token_type': 'bearer'}
     """
     client: TestClient = TestClient(app)

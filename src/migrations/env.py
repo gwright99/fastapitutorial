@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from logging.config import fileConfig
 
@@ -18,9 +19,13 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-config.set_main_option("sqlalchemy.url", settings.SQLALCHEMY_DATABASE_URL)
-# other values from the config, defined by the needs of env.py, can be acquired:
-# my_important_option = config.get_main_option("my_important_option")
+# Nov 9/2024 - Modify boilerplate to accommodate testing flow
+if os.getenv("FASTAPI_TESTING_RUN_ACTIVE", False):
+    config.set_main_option("sqlalchemy.url", settings.TEST_DB_URL)
+else:
+    config.set_main_option("sqlalchemy.url", settings.SQLALCHEMY_DATABASE_URL)
+    # other values from the config, defined by the needs of env.py, can be acquired:
+    # my_important_option = config.get_main_option("my_important_option")
 
 # add your model's MetaData object for 'autogenerate' support
 target_metadata = Base.metadata

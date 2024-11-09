@@ -67,8 +67,7 @@ def login(
     responses={
         201: {
             "model": UserCreate201,
-            "description": """For security purposes, will always send 201. This should appear in 
-                the endpoint documentation section.""",
+            "description": """For security purposes, alway returns 201.""",
         }
     },
 )  # , response_model=schemas.ShowUser, status_code=201)

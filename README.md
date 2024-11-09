@@ -360,6 +360,27 @@ $ gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --b
 
 For deploying to Kubernetes, however, [FastAPI docs](https://fastapi.tiangolo.com/bn/deployment/docker/#replication-number-of-processes) suggest a **single process per pod**. [Reddit thread](https://www.reddit.com/r/FastAPI/comments/1dkpu11/does_uvicorn_handle_multiple_requests_at_once/) says K8s is doing same thing as Gunicorn -- health checks and recycling dead pods. Better to have single processes sipping a single CPU and min RAM rather than fatter pod with requires more resources (e.g. 1 CPU / 150 MB RAM per Pod vs 4 CPU and 600 MB RAM per Pod).
 
+
+## Testing -- Setting environment variables easily
+- https://pytest-with-eric.com/pytest-best-practices/pytest-environment-variables/
+
+Using `pytest-env` and `pytest.ini` in `tests` folder.
+NOTE: FOUR (x4) slashes needed for `sqlite` URLs! 
+
+Nov 9/2024 - rewrote components to allow same project structure / setup to work for both live FASTAPI deployment and emulated TestClient-based testing. 
+
+1. Expectation is that all commands are launched from the PROEJCT ROOT (_i.e. `~/fastapitutorial`).
+2. `alembic.ini > script_location` changed to `src/migrations`.
+3. `boot_prestart.sh` changed so that paths are all relative to PROJECT ROOT.
+4. `pytest.ini` added to `tests/` to set an environment variable indicating a testing run was active.
+5. `src/core/config.py` updated to include `TEST_DB_FILE` and `TEST_DB_URL` to centralize testing db config with prod db config.
+6. `src/db/session.py` updated to dynamically populate engine with appropriate config based on present of testing flag / db prefix of `SQLALCHEMY_DATABASE_URL
+7. `src/migrations/env.py` modified with if statement looking for `FASTAPI_TESTING_RUN_ACTIVE` envvar. If yes, different DB connection string used for migration.
+6. `conftest.py` added to `tests/test_with_testclient`. 
+    - Activated `pytest_sessionstart` function to prep local SQLITE testing db.
+    - Activated `pytest_sessionfinish` to delete test db from local file system.
+conftest destroy db
+
 # Badge
 ![Unit Tests](https://github.com/gwright99/fastapitutorial/actions/workflows/unittest.yaml/badge.svg)
 ![PR Test](https://github.com/gwright99/fastapitutorial/actions/workflows/pr_test.yaml/badge.svg)

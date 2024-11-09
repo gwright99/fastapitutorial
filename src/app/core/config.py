@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "FastAPI Tutorial"
     PROJECT_VERSION: str = "0.0.1"
 
-    # DATABASE (POSTGRES)
+    # DATABASE PROD (POSTGRES)
     POSTGRES_USER: str | None = os.getenv("POSTGRES_USER")
     POSTGRES_PASSWORD: str | None = os.getenv("POSTGRES_PASSWORD")
     POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "localhost")
@@ -33,11 +33,15 @@ class Settings(BaseSettings):
     POSTGRES_DB: str = os.getenv("POSTGRES_DB", "tdd")
     POSTGRES_DATABASE_URL: str = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
 
-    # DATABASE (SQLITE)
-    # SQLITE_DATABASE_URL: Optional[str] = "/tmp/fastapitutorial.db"
+    # DATABASE PROD (SQLITE)
+    SQLITE_DATABASE_URL: str = "sqlite:////tmp/fastapi/prod.db"
 
-    # DATABASE (GENERIC)
+    # DATABASE PROD (GENERIC)
     SQLALCHEMY_DATABASE_URL: str = f"{POSTGRES_DATABASE_URL}"
+
+    # DATABASE TEST (SQLITE)
+    TEST_DB_FILE: str = "/tmp/fastapi/test.db"
+    TEST_DB_URL: str = f"sqlite:///{TEST_DB_FILE}"
 
     # JWT CONFIG
     JWT_SECRET_KEY: Optional[str] = os.getenv("JWT_SECRET_KEY")

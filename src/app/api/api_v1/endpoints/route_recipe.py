@@ -56,7 +56,8 @@ def view_all_recipes(
     # )
 
     # tests/test_with_testclient/test_auth.py::test_token_protected_endpoint_success[client_auth0]
-    #   /home/deeplearning/fastapitutorial/venv/lib/python3.10/site-packages/starlette/templating.py:161: DeprecationWarning: The `name` is not the first parameter anymore. The first parameter should be the `Request` instance.
+    #   /home/deeplearning/fastapitutorial/venv/lib/python3.10/site-packages/starlette/templating.py:161:
+    #     DeprecationWarning: The `name` is not the first parameter anymore. The first parameter should be the `Request` instance.
     #   Replace `TemplateResponse(name, {"request": request})` by `TemplateResponse(request, name)`.
     #     warnings.warn(
     return TEMPLATES.TemplateResponse(
@@ -129,7 +130,7 @@ def create_recipe(
     """
     if recipe_in.submitter_id != current_user.id:
         raise HTTPException(
-            status_code=403, detail=f"You can only submit recipes as yourself"
+            status_code=403, detail="You can only submit recipes as yourself."
         )
     recipe: mRecipe = crud.recipe.create(db=db, obj_in=recipe_in)
 

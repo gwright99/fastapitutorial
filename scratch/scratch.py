@@ -49,3 +49,58 @@ def create_users():
 
 
 create_users()
+
+
+
+
+
+
+
+>>> user = crud.user.get_by_email(db, email=su.email)
+>>> user
+<app.models.user.User object at 0x7fa1be372110>
+>>> user.__dict__
+{'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7fa1b9856380>, 'is_superuser': True, 'id': 2, 'hashed_password': '$2b$12$6LqHxk9bcSK2yVtHDHUmeeHIDMruABcC9RxiLemr/PzqEhCzaX2gW', 'email': 'admin2@admin.com', 'full_name': 'admin2', 'is_active': True}
+>>> x = dict(user)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'User' object is not iterable
+>>> x = user.__dict__
+>>> x.keys()
+dict_keys(['_sa_instance_state', 'is_superuser', 'id', 'hashed_password', 'email', 'full_name', 'is_active'])
+>>> x.values()
+dict_values([<sqlalchemy.orm.state.InstanceState object at 0x7fa1b9856380>, True, 2, '$2b$12$6LqHxk9bcSK2yVtHDHUmeeHIDMruABcC9RxiLemr/PzqEhCzaX2gW', 'admin2@admin.com', 'admin2', True])
+>>>
+>>>
+>>> user
+<app.models.user.User object at 0x7fa1be372110>
+>>> user.__dict__
+{'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7fa1b9856380>, 'is_superuser': True, 'id': 2, 'hashed_password': '$2b$12$6LqHxk9bcSK2yVtHDHUmeeHIDMruABcC9RxiLemr/PzqEhCzaX2gW', 'email': 'admin2@admin.com', 'full_name': 'admin2', 'is_active': True, 'recipes': [<app.models.recipe.Recipe object at 0x7fa1be3a01f0>]}
+>>> user['recipes'].__dict__
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'User' object is not subscriptable
+>>> user['recipes']
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'User' object is not subscriptable
+>>> user.recipes
+[<app.models.recipe.Recipe object at 0x7fa1be3a01f0>]
+>>> user.recipes.__dict__
+{'_sa_adapter': <sqlalchemy.orm.collections.CollectionAdapter object at 0x7fa1b97e7760>}
+>>> user.recipes.all()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'InstrumentedList' object has no attribute 'all'
+>>> print(user.recipes)
+[<app.models.recipe.Recipe object at 0x7fa1be3a01f0>]
+>>>
+>>> print(user.recipes[0])
+<app.models.recipe.Recipe object at 0x7fa1be3a01f0>
+>>> print(user.recipes[0].id)
+11
+>>> print(user.recipes[0].label)
+Chicken Paprikash
+>>> print(user.recipes[0].__dict__)
+{'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7fa1b9855f60>, 'source': 'No Recipes', 'id': 11, 'url': 'http://norecipes.com/recipe/chicken-paprikash/', 'label': 'Chicken Paprikash', 'submitter_id': 2}
+>>>
