@@ -65,7 +65,8 @@ jobs:
           # Create the .env file from secret if not present (i.e. running from `act`)
           if [ ! -f .env ]; then
             echo ".env file not present. Creating."
-            echo $ENVFILE > .env
+            cwd
+            echo $ENVFILE | base64 --decode > .env
           fi
           
           pytest tests/test_with_testclient --doctest-modules --junitxml=junit/test-results.xml --cov=./ --cov-report=html
