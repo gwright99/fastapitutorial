@@ -65,7 +65,7 @@ jobs:
           # Create the .env file from secret if not present (i.e. running from `act`)
           if [ ! -f .env ]; then
             echo ".env file not present. Creating."
-            cwd
+            pwd
             echo $ENVFILE | base64 --decode > .env
           fi
           
