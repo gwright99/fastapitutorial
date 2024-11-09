@@ -22,6 +22,7 @@ def pytest_sessionstart(session):
     Called after the Session object has been created and
     before performing collection and entering the run test loop.
     """
+    print("\n\n[PYTEST SESSION - STANDUP] Creating test db.\n")
     # https://stackoverflow.com/questions/27844088/python-get-directory-two-levels-up
     # Assumes following path: .. > installer > tests > conftest.py
     # import sys
