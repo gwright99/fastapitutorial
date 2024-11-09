@@ -69,11 +69,11 @@ jobs:
             echo $ENVFILE | base64 --decode > .env
           fi
           
-          pytest tests/test_with_testclient --doctest-modules --junitxml=junit/test-results.xml --cov=./ --cov-report=html
+          pytest -vs tests/test_with_testclient --doctest-modules --junitxml=junit/test-results.xml --cov=./ --cov-report=html
 
           # Run server in background and right with requests to localhost
           fastapi run src/app/main.py --port 5000 &
-          pytest tests/test_with_requests --doctest-modules --junitxml=junit/test-results.xml --cov=./ --cov-report=html
+          pytest -vs tests/test_with_requests --doctest-modules --junitxml=junit/test-results.xml --cov=./ --cov-report=html
 
 
 
