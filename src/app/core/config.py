@@ -1,4 +1,5 @@
 import os
+import secrets
 from pathlib import Path
 from typing import List, Optional, Union
 
@@ -31,7 +32,9 @@ class Settings(BaseSettings):
     POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "localhost")
     POSTGRES_PORT: int = int(os.getenv("POSTGRES_PORT", 5432))
     POSTGRES_DB: str = os.getenv("POSTGRES_DB", "tdd")
-    POSTGRES_DATABASE_URL: str = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
+    POSTGRES_DATABASE_URL: str = (
+        f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
+    )
 
     # DATABASE PROD (SQLITE)
     SQLITE_DATABASE_URL: str = "sqlite:////tmp/fastapi/prod.db"
@@ -44,7 +47,10 @@ class Settings(BaseSettings):
     TEST_DB_URL: str = f"sqlite:///{TEST_DB_FILE}"
 
     # JWT CONFIG
-    JWT_SECRET_KEY: Optional[str] = os.getenv("JWT_SECRET_KEY")
+    # TODO: Figure out how to get to nicely share this value between local testing and K8s deployment
+    JWT_SECRET_KEY: Optional[str] = os.getenv(
+        "JWT_SECRET_KEY", default=secrets.token_hex(32)
+    )
     JWT_ALGORITHM: str = "HS256"  # new
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30  # in mins  #new
 
