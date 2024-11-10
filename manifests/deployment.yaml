@@ -47,6 +47,26 @@ spec:
         - mountPath: /ghcontent
           name: repo-content
 
+      # Create .env file
+      # Hardcode values for now until retrieval solution is found.
+      - name: create-dotenv-fil
+        command: ["bash", "-c", "echo 'ADMIN1=admin1' >> /ghcontent/code/.env && echo 'ADMIN2=admin2' >> /ghcontent/code/.env"]
+        env:
+        - name: FASTAPI_TESTING_RUN_ACTIVE
+          value: "True"
+        - name: PYTHONPATH
+          value: "/ghcontent/code/src"
+        image: ghcr.io/gwright99/fastapitutorial:latest
+        imagePullPolicy: Always
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /ghcontent
+          name: repo-content
+        - mountPath: /tmp/fastapi
+          name: tempsqlite
+
       # Prep SQLITE DB
       # Use testing flag as hack for now.
       - name: prep-sqlite
