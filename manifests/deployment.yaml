@@ -67,6 +67,28 @@ spec:
       #   - mountPath: /tmp/fastapi
       #     name: tempsqlite
 
+      # Create .env file
+      # Mount secret from K8s then copy into shared volume.
+      - name: create-dotenv-fil
+        command: ["bash", "-c", "cp /tmp/envfile/.env /ghcontent/code/.env"]
+        env:
+        - name: FASTAPI_TESTING_RUN_ACTIVE
+          value: "True"
+        - name: PYTHONPATH
+          value: "/ghcontent/code/src"
+        image: ghcr.io/gwright99/fastapitutorial:latest
+        imagePullPolicy: Always
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /ghcontent
+          name: repo-content
+        - mountPath: /tmp/envfile
+          readOnly: true
+          name: envfile
+
+
       # Prep SQLITE DB
       # Use testing flag as hack for now.
       - name: prep-sqlite
@@ -92,17 +114,6 @@ spec:
         - mountPath: /ghcontent/code/.env
           readOnly: true
           name: envfile
-
-      # - command: ["sh", "-c", "sleep 3600"]
-      #   image: alpine/git
-      #   imagePullPolicy: Always
-      #   name: sleepawhile
-      #   resources: {}
-      #   terminationMessagePath: /dev/termination-log
-      #   terminationMessagePolicy: File
-      #   volumeMounts:
-      #   - mountPath: /ghcontent
-      #     name: repo-content
 
       containers:
       - image: ghcr.io/gwright99/fastapitutorial:latest
@@ -186,7 +197,7 @@ spec:
     name: public-cloudflare
     namespace: gloo-system
   rules:
-    # This works for 
+    # This works for
     #  - 'https://DOMAIN/tutorial/healthcheck'
     #  - 'https://DOMAIN/tutorial/'
     # Breaks for root URL without traiing '/', so need second rule
@@ -211,7 +222,7 @@ spec:
           # https://github.com/kubernetes-sigs/gateway-api/issues/1954
           value: "/tutorial/"
 
-    # This works for 
+    # This works for
     #  - 'https://DOMAIN/tutorial'
     - backendRefs:
       - group: ""

@@ -28,6 +28,7 @@ repos:
     hooks:
     # All hooks: https://github.com/pre-commit/pre-commit-hooks
     -   id: check-yaml
+        args: [--allow-multiple-documents]
     -   id: end-of-file-fixer
     -   id: trailing-whitespace
     # -   id: check-json          # Can't handle JSON with comments
