@@ -401,6 +401,12 @@ Need to find a consistent way to harmonize files in local `.env`, with GHA Secre
 
 Idea: Helper script. Can use GH CLI to harmonize GH. Need to figure out how to push SSH commands through to local basstion server to be able to populate via local cluster's `kubectl`. Alternatively, use Vault instance as core distribution mechanism.
 
+SOLUTION:
+`~/fastapitutorial/src/scripts/harmonize_secrets.sh`. Does two things:
+
+1. Creates `ENVFILE` Secret in GH repo (_accessible to `gwright99/fastapitutorial`).
+2. Creates K8s Secret `envfile` in namespace `fastapi`. Deployment manifest has init container to copy and decode the content into the cloned repo in the expected location.
+
 # Badge
 ![Unit Tests](https://github.com/gwright99/fastapitutorial/actions/workflows/unittest.yaml/badge.svg)
 ![PR Test](https://github.com/gwright99/fastapitutorial/actions/workflows/pr_test.yaml/badge.svg)
