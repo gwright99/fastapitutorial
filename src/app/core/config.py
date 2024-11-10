@@ -31,7 +31,9 @@ class Settings(BaseSettings):
     POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "localhost")
     POSTGRES_PORT: int = int(os.getenv("POSTGRES_PORT", 5432))
     POSTGRES_DB: str = os.getenv("POSTGRES_DB", "tdd")
-    POSTGRES_DATABASE_URL: str = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
+    POSTGRES_DATABASE_URL: str = (
+        f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
+    )
 
     # DATABASE PROD (SQLITE)
     SQLITE_DATABASE_URL: str = "sqlite:////tmp/fastapi/prod.db"
@@ -58,7 +60,8 @@ class Settings(BaseSettings):
     # Any endpoint with a declared dependency on `oauth2_scheme` will look for a Bearer HTTP Header or
     # else throw a 401.
     # https://stackoverflow.com/questions/67307159/what-is-the-actual-use-of-oauth2passwordbearer
-    AUTH_TOKEN_URL: str = f"{API_V1_STR}/auth/token"
+    # AUTH_TOKEN_URL: str = f"{API_V1_STR}/auth/token"
+    AUTH_TOKEN_URL: str = f"/tutorial{API_V1_STR}/auth/token"
 
     # CORS
     # e.g: '["http://localhost", "http://localhost:4200", "http://local.dockertoolbox.tiangolo.com"]'
