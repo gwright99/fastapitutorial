@@ -70,6 +70,7 @@ spec:
       # Create .env file
       # Mount secret from K8s then copy into shared volume.
       - name: create-dotenv-fil
+        # Testing
         # command: ["bash", "-c", "cp /tmp/envfile/.env /ghcontent/code/.env && cat /ghcontent/code/.env"]
         command: ["bash", "-c", "sleep 300"]
         env:
