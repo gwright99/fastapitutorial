@@ -47,6 +47,25 @@ spec:
         - mountPath: /ghcontent
           name: repo-content
 
+      # Prep SQLITE DB
+      # Use testing flag as hack for now.
+      - name: prep-sqlite
+        # command: ["bash", "-c", "cd /ghcontent/code && src/scripts/boot_prestart.sh"]
+        command: ["bash", "-c", "sleep 3600"]
+        env:
+        - name: FASTAPI_TESTING_RUN_ACTIVE
+          value: "True"
+        - name: PYTHONPATH
+          value: "/ghcontent/code/src"
+        image: ghcr.io/gwright99/fastapitutorial:latest
+        imagePullPolicy: Always
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /ghcontent
+          name: repo-content
+
       # - command: ["sh", "-c", "sleep 3600"]
       #   image: alpine/git
       #   imagePullPolicy: Always
@@ -66,7 +85,11 @@ spec:
         - name: ghcontent
           value: "/ghcontent/code"
         - name: PYTHONPATH
-          value: "/ghcontent/code/app"
+          # value: "/ghcontent/code/app"
+          value: "/ghcontent/code/src"
+        # Hack to get DB running easily
+        - name: FASTAPI_TESTING_RUN_ACTIVE
+          value: "True"
         ports:
         - containerPort: 8081
           name: blah
