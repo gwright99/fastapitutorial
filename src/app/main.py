@@ -23,6 +23,7 @@ app = FastAPI(
     # docs_url=f"/api/v1/docs",
     # redoc_url=f"/api/v1/redoc",
     root_path="/tutorial",  # <------ Fixes K8s reverse proxy problem.
+    debug=True,
 )
 
 
