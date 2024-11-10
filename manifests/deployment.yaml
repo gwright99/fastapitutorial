@@ -69,10 +69,11 @@ spec:
 
       # Create .env file
       # Mount secret from K8s then copy into shared volume.
+      # For reason why I did the secret mount this way, see:
+      # https://www.jeffgeerling.com/blog/2019/mounting-kubernetes-secret-single-file-inside-pod
       - name: create-dotenv-fil
         # Testing
-        # command: ["bash", "-c", "cp /tmp/envfile/.env /ghcontent/code/.env && cat /ghcontent/code/.env"]
-        # command: ["bash", "-c", "sleep 300"]
+
         command: ["bash", "-c", "cat /tmp/envfile/.env | base64 --decode > /ghcontent/code/.env"]
         env:
         - name: FASTAPI_TESTING_RUN_ACTIVE
