@@ -52,7 +52,7 @@ spec:
       - name: prep-sqlite
         # command: ["bash", "-c", "cd /ghcontent/code && src/scripts/boot_prestart.sh"]
         # command: ["bash", "-c", "sleep 3600"]
-        command: ["bash", "-c", "cd /ghcontent/code && mkdir /tmp/fastapi/ && touch /tmp/fastapi/test.db && src/scripts/boot_prestart.sh"]
+        command: ["bash", "-c", "cd /ghcontent/code && touch /tmp/fastapi/test.db && src/scripts/boot_prestart.sh"]
         env:
         - name: FASTAPI_TESTING_RUN_ACTIVE
           value: "True"
@@ -66,6 +66,8 @@ spec:
         volumeMounts:
         - mountPath: /ghcontent
           name: repo-content
+        - mountPath: /tmp/fastapi
+          name: tempsqlite
 
       # - command: ["sh", "-c", "sleep 3600"]
       #   image: alpine/git
@@ -102,6 +104,8 @@ spec:
         volumeMounts:
         - mountPath: /ghcontent
           name: repo-content
+        - mountPath: /tmp/fastapi
+          name: tempsqlite
       dnsPolicy: ClusterFirst
 
       imagePullSecrets:
@@ -114,6 +118,8 @@ spec:
       volumes:
       - emptyDir: {}
         name: repo-content
+      - emptyDir": {}
+        name: tempsqlite
 ---
 apiVersion: v1
 kind: Service
