@@ -392,6 +392,15 @@ Testing GHA via ACT:
 4. Updated `act` command to accommodate need for .env file for fastapi instanc (from `~/fastapitutorial`): `gh act -j test -W .github/workflows/unittest.yaml -s ENVFILE=$(base64 .env -w 0)` 
     - Had to creae secret ENVFILE in GH repo as well (populated with base64-encoded .env file).
 
+
+## Secrets
+Need to find a consistent way to harmonize files in local `.env`, with GHA Secret, with K8s pod. Currently
+
+1. GHA Secret created via cut-and-paste of B64ed local .env.
+2. K8s pod populated by hardcoded init container.
+
+Idea: Helper script. Can use GH CLI to harmonize GH. Need to figure out how to push SSH commands through to local basstion server to be able to populate via local cluster's `kubectl`. Alternatively, use Vault instance as core distribution mechanism.
+
 # Badge
 ![Unit Tests](https://github.com/gwright99/fastapitutorial/actions/workflows/unittest.yaml/badge.svg)
 ![PR Test](https://github.com/gwright99/fastapitutorial/actions/workflows/pr_test.yaml/badge.svg)
