@@ -72,7 +72,8 @@ spec:
       - name: create-dotenv-fil
         # Testing
         # command: ["bash", "-c", "cp /tmp/envfile/.env /ghcontent/code/.env && cat /ghcontent/code/.env"]
-        command: ["bash", "-c", "sleep 300"]
+        # command: ["bash", "-c", "sleep 300"]
+        command: ["bash", "-c", "cat /tmp/envfile/.env | base64 --decode > /ghcontent/code/.env"]
         env:
         - name: FASTAPI_TESTING_RUN_ACTIVE
           value: "True"
@@ -113,9 +114,6 @@ spec:
         - mountPath: /tmp/fastapi
           name: tempsqlite
         # Mounting envfile
-        - mountPath: /ghcontent/code/.env
-          readOnly: true
-          name: envfile
 
       containers:
       - image: ghcr.io/gwright99/fastapitutorial:latest
@@ -143,10 +141,7 @@ spec:
           name: repo-content
         - mountPath: /tmp/fastapi
           name: tempsqlite
-        # Mounting envfile
-        - mountPath: /ghcontent/code/.env
-          readOnly: true
-          name: envfile
+
       dnsPolicy: ClusterFirst
 
       imagePullSecrets:
