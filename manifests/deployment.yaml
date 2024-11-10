@@ -51,7 +51,8 @@ spec:
       # Use testing flag as hack for now.
       - name: prep-sqlite
         # command: ["bash", "-c", "cd /ghcontent/code && src/scripts/boot_prestart.sh"]
-        command: ["bash", "-c", "sleep 3600"]
+        # command: ["bash", "-c", "sleep 3600"]
+        command: ["bash", "-c", "cd /ghcontent/code && mkdir /tmp/fastapi/ && touch /tmp/fastapi/test.db && src/scripts/boot_prestart.sh"]
         env:
         - name: FASTAPI_TESTING_RUN_ACTIVE
           value: "True"
