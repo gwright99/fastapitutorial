@@ -33,6 +33,7 @@ def authenticate_user(
     # Return None if User does not exist or password is wrong.
     user = db.query(User).filter(User.email == email).first()
     if not user:
+        print(f"User {email} not found.")
         # hashed_password is "lorem"
         Hasher.verify_password(
             "ipsem", "$2b$12$jGWwfRodNgpUgFjbKvcz7O8Nf3MprXG5lHXQRHxH64ciQAqtNIH4m"
@@ -40,8 +41,10 @@ def authenticate_user(
         return None
 
     if not Hasher.verify_password(password, user.hashed_password):
+        print(f"User {email}'s password {password} did not hash properly. ")
         return None
 
+    print(f"User {email} password successfully hashed.")
     return user
 
 
