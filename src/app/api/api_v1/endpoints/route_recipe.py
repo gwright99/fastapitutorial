@@ -198,6 +198,6 @@ def fetch_ideas(reddit_client: RedditClient = Depends(get_reddit_client)) -> dic
     }
 
 
-# @router.get("/newroute")
-# def expose_new_route() -> dict:
-#     return {"hello": "newroute!"}
+@router.get("/newroute")
+def expose_new_route() -> dict:
+    return {"hello": "newroute!"}
