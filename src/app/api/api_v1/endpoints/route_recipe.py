@@ -196,3 +196,8 @@ def fetch_ideas(reddit_client: RedditClient = Depends(get_reddit_client)) -> dic
     return {
         key: reddit_client.get_reddit_top(subreddit=key) for key in RECIPE_SUBREDDITS
     }
+
+
+@router.get("/newroute")
+def expose_new_route() -> dict:
+    return {"hello": "newroute!"}

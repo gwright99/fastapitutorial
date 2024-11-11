@@ -6,9 +6,12 @@
 ## -------------------------------------------------------------
 # https://cli.github.com/manual/gh_secret_set
 # $ gh secret list --repo gwright99/fastapitutorial
+
+b64content=$(base64 -w 0 < .env)
+
 echo "Creating GHA Secret 'ENVFILE'"
 gh secret delete ENVFILE --repo gwright99/fastapitutorial || true
-gh secret set ENVFILE --repo gwright99/fastapitutorial < .env
+gh secret set ENVFILE --repo gwright99/fastapitutorial $b64content
 
 
 ## K8S SECRET
